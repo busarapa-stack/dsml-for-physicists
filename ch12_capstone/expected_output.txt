@@ -1,0 +1,32 @@
+# expected_output.txt  —  Ch.12, produced by: python run_chapter.py ch12_capstone --clean
+# Python 3.11.15 | numpy 2.4.4 | scipy 1.17.1 | scikit-learn 1.8.0
+# Data: toy Higgs of Ch.6. The SHA-256 prefix and the package versions depend on the installed versions.
+# 03_claims_checks.py (second pass) also reruns ../ch09_evaluation/09_delong_calibration.py. Total about 1.5 minutes.
+
+=== 01_seed_spread.py  (exit 0) ===
+same seeds twice: 0.9759368923611111 0.9759368923611111
+model seed: mean 0.9763, range 0.9759-0.9765
+split seed: mean 0.9784, range 0.9770-0.9820
+widths: model seed 0.0006, split seed 0.0050 (ratio 8.5)
+
+=== 02_manifest.py  (exit 0) ===
+{'numpy': '2.4.4', 'scipy': '1.17.1', 'sklearn': '1.8.0'} 938fc1abc8982b06
+overlap, clean split: 0
+overlap, data with duplicates: 121
+expected twins in the test set if the 300 duplicates were split at random: 2 x 300 x 0.3 x 0.7 = 126
+
+=== 03_claims_checks.py  (exit 0) ===
+same seeds twice: 0.9759368923611111 0.9759368923611111
+model seed: mean 0.9763, range 0.9759-0.9765
+split seed: mean 0.9784, range 0.9770-0.9820
+{'numpy': '2.4.4', 'scipy': '1.17.1', 'sklearn': '1.8.0'} 938fc1abc8982b06
+overlap, clean split: 0
+overlap, data with duplicates: 121
+1  both listings ran as one notebook in 21 s (model-seed range 0.9759-0.9765, split-seed range 0.9770-0.9820)
+2  one byte changed: 61 of 64 hex digits of SHA-256 differ
+3  test rows with a twin in training: 121 (expected 126 +/- 8.5)
+   forest min_samples_leaf=10: accuracy on the 121 test rows with a twin 0.975, on the other test rows 0.935
+   forest min_samples_leaf=1: accuracy on the 121 test rows with a twin 1.000, on the other test rows 0.935
+5  duplicate check on 6,090 test rows against 14,210 training rows: 0.06 s
+4  split-seed width 0.0050; Chapter 9 DeLong: AUC(SVM) - AUC(RF) = 0.0028 +/- 0.0010, p = 0.006
+

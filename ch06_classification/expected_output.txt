@@ -1,0 +1,190 @@
+# expected_output.txt  —  Ch.6, produced by: python run_chapter.py ch06_classification --clean --with-exercises
+# Python 3.11.15 | numpy 2.4.4 | scipy 1.17.1 | pandas 3.0.2 + pyarrow 25.0.1 | scikit-learn 1.8.0 | imbalanced-learn 0.14.2 | seaborn 0.13.2
+# Higgs data: SYNTHETIC toy (code:higgs-data, seed 2026).
+# SDSS table here: SYNTHETIC STAND-IN from 05_sdss_data.py. Results with the REAL Kaggle file are in
+#   optional/expected_output_real.txt. Timings depend on the computer.
+
+=== 01_higgs_toy_data.py  (exit 0) ===
+20000 events, signal fraction: all 0.200, train 0.200, validation 0.200; validation size 6000 (1200 signal, 4800 background)
+
+mean of each feature (GeV, dR dimensionless):
+              m_bb      pT    dR  ETmiss
+label                                   
+background  109.16  119.88  2.20   29.69
+signal      124.81  159.01  1.93   20.01
+signal m_bb: 95 % of events in [101, 148] GeV; background fraction below/above that window: 0.59 / 0.21
+signal dR*pT/(2 m_bb): median 0.99 (background 1.11)
+saved data/higgs_toy.csv
+
+=== 02_logreg_forest.py  (exit 0) ===
+[[ 0.40283542  0.49870811 -0.06942801 -0.43934471]]
+
+feature   impurity   permutation (drop in validation AUC)
+m_bb         0.694      0.350
+dR           0.167      0.103
+pT           0.118      0.098
+ETmiss       0.020      0.003
+sums: impurity 1.00, permutation 0.55
+
+mean predict_proba of the forest on the validation set = 0.259 (true signal fraction there 0.200)
+logistic regression validation AUC = 0.703
+
+=== 03_compare_five.py  (exit 0) ===
+[[ 0.40283542  0.49870811 -0.06942801 -0.43934471]]
+LogReg      acc=0.653 F1=0.421 AUC=0.703
+KNN         acc=0.925 F1=0.827 AUC=0.973
+SVM (RBF)   acc=0.910 F1=0.814 AUC=0.977
+DecTree     acc=0.887 F1=0.776 AUC=0.942
+RandForest  acc=0.915 F1=0.818 AUC=0.975
+always 'background': accuracy 0.800
+
+random forest (code:rf): TN = 4348, FP = 452, FN = 56, TP = 1144
+purity (precision) = 0.717, efficiency (recall) = 0.953, specificity = 0.906
+F1 for purity 0.99 and efficiency 0.05: 0.095 (arithmetic mean 0.52)
+with |m_bb - 125| instead of m_bb: LogReg     AUC = 0.931
+with |m_bb - 125| instead of m_bb: RandForest AUC = 0.973
+
+=== 04_roc_significance.py  (exit 0) ===
+[[ 0.40283542  0.49870811 -0.06942801 -0.43934471]]
+AUC = 0.975
+best cut 0.892: eff_S = 0.645, eff_B = 0.0200, S = 32.2, B = 100.0, Z = 3.07
+
+no cut: S/sqrt(B) = 0.71, Z_A = 0.71
+gain in significance from the classifier: x4.4
+purity at the best cut: validation set 0.890, expected real data 0.244; S/B = 0.32
+maximising S/sqrt(B) instead: cut 0.953, B = 21.9, S/sqrt(B) = 3.31, but Z_A there = 3.01 (< 3.07)
+S/sqrt(B) with validation-set counts (meaningless): max 114 at B = 1 event(s)
+purity at f = 1 %: 0.25
+s_exp =    50: best cut 0.892, eff_S = 0.645, eff_B = 0.0200, S = 32, B = 100, S/B = 0.32, Z_A = 3.1
+s_exp =   500: best cut 0.892, eff_S = 0.645, eff_B = 0.0200, S = 322, B = 100, S/B = 3.23, Z_A = 23.9
+s_exp =  2000: best cut 0.860, eff_S = 0.743, eff_B = 0.0296, S = 1487, B = 148, S/B = 10.05, Z_A = 69.9
+
+=== 05_sdss_data.py  (exit 0) ===
+source: SYNTHETIC stand-in written by 05_sdss_data.py (not real SDSS data)
+100000 rows; columns: ['obj_ID', 'alpha', 'delta', 'u', 'g', 'r', 'i', 'z', 'class', 'redshift']
+class fractions: GALAXY 0.594, STAR 0.216, QSO 0.190
+rows with a sentinel magnitude (< -100): 1
+
+=== 06_sdss_colors.py  (exit 0) ===
+SYNTHETIC stand-in written by 05_sdss_data.py (not real SDSS data)
+99999 rows after dropping sentinel magnitudes
+         u_g   g_r   r_i   i_z  redshift
+class                                   
+GALAXY  1.67  0.82  0.51  0.29      0.19
+QSO     0.25  0.17  0.12  0.01      1.74
+STAR    1.42  0.47  0.23  0.11     -0.00
+saved outputs/ch06_sdss_color_color.png
+
+=== 07_sdss_compare.py  (exit 0) ===
+LogReg      macro-F1 = 0.993 +/- 0.000
+KNN         macro-F1 = 0.983 +/- 0.001
+SVM (RBF)   macro-F1 = 0.993 +/- 0.001
+DecTree     macro-F1 = 1.000 +/- 0.000
+RandForest  macro-F1 = 1.000 +/- 0.000
+SYNTHETIC stand-in written by 05_sdss_data.py (not real SDSS data) | SVM on 10,000 rows
+
+[with redshift] random forest, test set: macro-F1 = 1.000
+confusion matrix (rows true, columns predicted): ['GALAXY', 'STAR', 'QSO']
+[[14860     0     1]
+ [    0  5399     0]
+ [    0     0  4740]]
+largest confusions: [('GALAXY->QSO', np.int64(1)), ('GALAXY->STAR', np.int64(0)), ('STAR->GALAXY', np.int64(0))]
+importance: redshift 0.51, r_i 0.17, u_g 0.15, g_r 0.11, i_z 0.05, r 0.02
+
+[without redshift] random forest, test set: macro-F1 = 0.961
+confusion matrix (rows true, columns predicted): ['GALAXY', 'STAR', 'QSO']
+[[14494   359     8]
+ [  373  4991    35]
+ [   12    80  4648]]
+largest confusions: [('STAR->GALAXY', np.int64(373)), ('GALAXY->STAR', np.int64(359)), ('QSO->STAR', np.int64(80))]
+importance: r_i 0.30, u_g 0.28, g_r 0.18, i_z 0.13, r 0.10
+without redshift, 5-fold CV on all rows: LogReg     macro-F1 = 0.826 +/- 0.004
+without redshift, 5-fold CV on all rows: RandForest macro-F1 = 0.959 +/- 0.001
+
+=== 08_claims_checks.py  (exit 0) ===
+[[ 0.40283542  0.49870811 -0.06942801 -0.43934471]]
+
+1. -ln 0.01 = 4.61, -ln 0.4 = 0.92
+2. F1(0.99, 0.05) = 0.095, arithmetic mean 0.52
+3. same classifier, validation set resampled to other signal fractions:
+   signal fraction 0.200: AUC 0.975, purity at cut 0.892 = 0.89
+   signal fraction 0.091: AUC 0.975, purity at cut 0.892 = 0.76
+   signal fraction 0.010: AUC 0.970, purity at cut 0.892 = 0.21
+4. E6.1: 50,000 false positives/day, fake:real = 500:1, purity 0.0020, S/sqrt(B) per day = 0.447, days to 5 sigma = 125
+5. toy mass resolution 12/125 = 0.096
+
+=== exercises/E6_2_feature_matrix.py  (exit 0) ===
+signal fraction: all 0.200, train 0.200, validation 0.200
+signal m_bb window (central 90 %): 105-144 GeV
+new feature dR*pT/(2 m_bb): signal median 0.99
+saved outputs/E6_2_pairplot.png
+
+=== exercises/E6_3_timing_cv.py  (exit 0) ===
+[[ 0.40283542  0.49870811 -0.06942801 -0.43934471]]
+LogReg      acc=0.653 F1=0.421 AUC=0.703
+KNN         acc=0.925 F1=0.827 AUC=0.973
+SVM (RBF)   acc=0.910 F1=0.814 AUC=0.977
+DecTree     acc=0.887 F1=0.776 AUC=0.942
+RandForest  acc=0.915 F1=0.818 AUC=0.975
+
+method       fit (s)  predict (s)   CV F1 (mean +/- std)
+LogReg         0.010      0.001     0.436 +/- 0.012
+KNN            0.009      0.070     0.838 +/- 0.010
+SVM (RBF)      1.195      0.443     0.807 +/- 0.009
+DecTree        0.041      0.001     0.790 +/- 0.015
+RandForest     1.503      0.064     0.827 +/- 0.010
+LogReg with |m_bb - 125|: CV F1 0.712 +/- 0.014
+(times depend on the computer; compare their ratios)
+
+=== exercises/E6_4_roc_threshold_plots.py  (exit 0) ===
+[[ 0.40283542  0.49870811 -0.06942801 -0.43934471]]
+AUC = 0.975
+best cut 0.892: eff_S = 0.645, eff_B = 0.0200, S = 32.2, B = 100.0, Z = 3.07
+
+best threshold 0.892: eff_S 0.645, eff_B 0.0200, purity 0.244, Z_A 3.07
+the s_exp = 500 and 2000 cases are printed by 04_roc_significance.py
+saved outputs/E6_4_roc_threshold.png
+
+=== exercises/E6_5_sdss_figures.py  (exit 0) ===
+SYNTHETIC stand-in written by 05_sdss_data.py (not real SDSS data)
+saved outputs/E6_5_color_color_4.png and outputs/E6_5_confusion.png
+
+=== exercises/E6_6_smote_vs_weights.py  (exit 0) ===
+model           AUC    efficiency  purity   (threshold 0.5, validation set)
+no correction   0.957   0.058      1.000
+class_weight    0.952   0.750      0.139
+SMOTE           0.954   0.800      0.108
+
+27720 synthetic signal events; dR*pT/(2 m_bb): real signal median 0.98, IQR 0.24; synthetic median 0.98, IQR 0.21
+fraction outside the 1-99 % band of the real signal [0.52, 1.33]: real 0.02 by construction, synthetic 0.010
+-> SMOTE joins close neighbours, so here the curved dR-pT relation survives almost intact; the danger grows when the minority class is sparse or the relation bends sharply
+saved outputs/E6_6_smote_dR_pT.png
+
+=== exercises/E6_7_importance_stability.py  (exit 0) ===
+[[ 0.40283542  0.49870811 -0.06942801 -0.43934471]]
+
+feature   mean    std   (20 bootstrap resamples)
+m_bb     0.694  0.0087
+pT       0.118  0.0087
+dR       0.165  0.0102
+ETmiss   0.023  0.0028
+dR - pT: mean 0.047, std 0.016; dR above pT in 20 of 20 resamples
+
+=== exercises/E6_8_decision_boundaries.py  (exit 0) ===
+LogReg     training accuracy 0.862, connected regions on the grid: 2
+KNN k=1    training accuracy 1.000, connected regions on the grid: 11
+KNN k=25   training accuracy 0.942, connected regions on the grid: 3
+SVM (RBF)  training accuracy 0.936, connected regions on the grid: 2
+DecTree    training accuracy 0.970, connected regions on the grid: 4
+saved outputs/E6_8_decision_boundaries.png
+
+=== exercises/E6_9_auc_bootstrap.py  (exit 0) ===
+[[ 0.40283542  0.49870811 -0.06942801 -0.43934471]]
+
+random forest AUC = 0.975, bootstrap 95 % CI [0.971, 0.978] (std 0.0018)
+SVM 0.977 and KNN 0.973 (tab:cls-results) lie inside this interval
+
+=== exercises/E6_10_quasar_significance.py  (exit 0) ===
+SYNTHETIC stand-in written by 05_sdss_data.py (not real SDSS data)
+QSO-vs-rest AUC = 1.000
+best threshold 0.775: efficiency 0.964, contamination rate 0.0005, S = 193, B = 11, purity 0.95, Z_A = 28.4

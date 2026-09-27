@@ -1,0 +1,195 @@
+# expected_output.txt  —  Ch.10, produced by: python run_chapter.py ch10_neural_networks --clean --with-exercises
+# Python 3.11.15 | numpy 2.4.4 | scipy 1.17.1 | scikit-learn 1.8.0 | torch 2.14.0+cu130 (CPU)
+# All data SYNTHETIC (toy Higgs of Ch.6, Lennard-Jones chain Monte Carlo, Ising Metropolis of Ch.4, damped oscillator of Ch.5).
+# Total run about 8 minutes on two CPU cores (chain generation 2.5 min, PINN 1.7 min, Ising 1 min), plus about 13 minutes for
+# 08_claims_checks.py (second-pass checks, section appended below). Timings depend on the computer.
+# PyTorch results can differ in the last digit across platforms and torch versions (floating-point order of operations).
+# The polymer chain (03, 04, 07, E10.6) is chaotic w.r.t. rounding: on another CPU/numpy build expect a different but
+# statistically equivalent ensemble (e.g. T*_NN 1.3-1.5 instead of 1.33; see 09_replicate_chains.py and README).
+# 09_replicate_chains.py (about 10 min) is not included below; its output is in README.
+
+=== 01_higgs_mlp.py  (exit 0) ===
+4610 parameters
+AUC = 0.9791
+final training loss 0.126 (epoch 1: 0.297); accuracy at P > 0.5: 0.935
+no activation functions: AUC = 0.688
+Chapter 6 lr_pipe: AUC = 0.703
+Chapter 6 rf_pipe: AUC = 0.975
+saved outputs/ch10_higgs_loss.png
+
+=== 02_learning_rate_scan.py  (exit 0) ===
+4610 parameters
+     lr  loss(epoch 1, 5, 10, 30)          AUC
+  1e-05  0.604 0.512 0.442 0.327      0.905
+  1e-04  0.512 0.263 0.175 0.139      0.977
+  1e-03  0.297 0.137 0.132 0.126      0.979
+  1e-02  0.179 0.140 0.135 0.129      0.979
+  1e-01  0.226 0.170 0.186 0.182      0.966
+  1e+00  5.443 0.515 0.517 0.520      0.500
+lr = 1: units active for at least one training event: layer 1 64/64, layer 2 0/64; P(signal) 0.217-0.217 for every event
+loss of a constant prediction 0.2: 0.500
+
+=== 03_polymer_chain.py  (exit 0) ===
+T = 0.6  <Rg^2> =  2.58  C_v/N = 2.218  d<Rg^2>/dT = 1.58
+T = 0.8  <Rg^2> =  2.67  C_v/N = 1.330  d<Rg^2>/dT = 1.25
+T = 1.0  <Rg^2> =  3.17  C_v/N = 1.258  d<Rg^2>/dT = 1.77
+T = 1.2  <Rg^2> =  3.32  C_v/N = 0.891  d<Rg^2>/dT = 1.85
+T = 1.4  <Rg^2> =  4.04  C_v/N = 0.890  d<Rg^2>/dT = 3.10
+T = 1.6  <Rg^2> =  4.38  C_v/N = 0.662  d<Rg^2>/dT = 2.62
+T = 1.8  <Rg^2> =  5.00  C_v/N = 0.600  d<Rg^2>/dT = 2.99
+T = 2.0  <Rg^2> =  5.77  C_v/N = 0.525  d<Rg^2>/dT = 3.14
+T = 2.2  <Rg^2> =  6.34  C_v/N = 0.368  d<Rg^2>/dT = 2.68
+T = 2.4  <Rg^2> =  7.25  C_v/N = 0.271  d<Rg^2>/dT = 2.52
+T = 2.6  <Rg^2> =  7.44  C_v/N = 0.223  d<Rg^2>/dT = 1.98
+T = 2.8  <Rg^2> =  7.69  C_v/N = 0.190  d<Rg^2>/dT = 1.78
+T = 3.0  <Rg^2> =  7.96  C_v/N = 0.150  d<Rg^2>/dT = 1.32
+T = 3.2  <Rg^2> =  8.23  C_v/N = 0.145  d<Rg^2>/dT = 1.11
+T = 3.4  <Rg^2> =  8.63  C_v/N = 0.110  d<Rg^2>/dT = 1.12
+generation + features: 140 s
+saved data/chain.npz (6000, 30, 3)
+tanh fit of <Rg^2>(T): T* = 1.90 +/- 0.04, w = 1.00 +/- 0.10
+saved outputs/ch10_chain_rg2.png
+
+=== 04_polymer_classifier.py  (exit 0) ===
+validation accuracy: 0.994  T* = 1.33
+mean P(globule): [1.   1.   1.   0.7  0.4  0.29 0.25 0.15 0.09 0.05 0.04 0.03 0.01 0.
+ 0.  ]
+spread of P within each T: [0.   0.   0.   0.42 0.46 0.42 0.4  0.33 0.28 0.2  0.19 0.14 0.07 0.
+ 0.05]
+T = 1.2-1.8: within-T SD of P 0.40-0.46; fraction with P < 0.1 or P > 0.9: 0.86-0.90
+
+tab:polymer-nn  crossing of mean P = 0.5 (validation accuracy)
+features                 <= 0.8, >= 3.2   <= 1.0, >= 3.0   <= 1.2, >= 2.8
+pair distances (435)      1.25 (0.994)      1.33 (0.994)      1.43 (0.984)  
+Rg^2 alone                1.33 (0.997)      1.55 (0.992)      1.56 (0.978)  
+raw coordinates (90)      0.93 (0.991)      1.32 (0.960)      1.41 (0.938)  
+raw coordinates, ends <= 0.8 / >= 3.2: mean P at T = 1.0 0.21, at T = 1.2 0.41
+midpoint of <Rg^2>(T) from the tanh fit (03_polymer_chain.py): 1.90 +/- 0.04
+
+=== 05_ising_configs.py  (exit 0) ===
+generated (3400, 256) in 67 s
+saved data/ising.npz
+T = 1.6  <|m|> = 0.98  <m> = -0.98
+T = 1.7  <|m|> = 0.97  <m> = +0.97
+T = 1.8  <|m|> = 0.96  <m> = -0.96
+T = 1.9  <|m|> = 0.94  <m> = -0.94
+T = 2.0  <|m|> = 0.92  <m> = -0.92
+T = 2.1  <|m|> = 0.84  <m> = -0.84
+T = 2.2  <|m|> = 0.77  <m> = -0.77
+T = 2.3  <|m|> = 0.75  <m> = -0.75
+T = 2.4  <|m|> = 0.58  <m> = +0.41
+T = 2.5  <|m|> = 0.34  <m> = +0.08
+T = 2.6  <|m|> = 0.33  <m> = +0.01
+T = 2.7  <|m|> = 0.25  <m> = -0.02
+T = 2.8  <|m|> = 0.22  <m> = +0.05
+T = 2.9  <|m|> = 0.18  <m> = -0.03
+T = 3.0  <|m|> = 0.17  <m> = -0.02
+T = 3.1  <|m|> = 0.16  <m> = +0.00
+T = 3.2  <|m|> = 0.15  <m> = -0.02
+
+=== 06_pinn_oscillator.py  (exit 0) ===
+physics=False: RMSE t<=3 0.392, t>3 0.341
+physics=True: RMSE t<=3 0.036, t>3 0.111
+  gamma = 0.327 (true 0.3), omega_0 = 6.020 (true 6.007)
+both trainings: 102 s
+parameters of the network: 8513
+curve_fit (0.001 s): gamma = 0.264 +/- 0.038, omega = 6.038 +/- 0.037; RMSE t<=3 0.026, t>3 0.031
+size of the ODE term relative to x: omega_0^4 = 1302
+PINN, 3 < t <= 4.5 s: RMSE 0.080 m, max |x| 0.33 m (truth 0.40 m)
+PINN, 4.5 < t <= 6 s: RMSE 0.135 m, max |x| 0.07 m (truth 0.25 m)
+saved outputs/ch10_pinn.png
+
+=== 07_mc_dropout_ensemble.py  (exit 0) ===
+validation accuracy: 0.994  T* = 1.33
+mean P(globule): [1.   1.   1.   0.7  0.4  0.29 0.25 0.15 0.09 0.05 0.04 0.03 0.01 0.
+ 0.  ]
+spread of P within each T: [0.   0.   0.   0.42 0.46 0.42 0.4  0.33 0.28 0.2  0.19 0.14 0.07 0.
+ 0.05]
+T* of members: [1.33 1.34 1.35 1.4  1.36]
+T = 0.6  MC-dropout sd 0.000  ensemble sd 0.000  config-to-config sd 0.00
+T = 0.8  MC-dropout sd 0.000  ensemble sd 0.000  config-to-config sd 0.00
+T = 1.0  MC-dropout sd 0.001  ensemble sd 0.002  config-to-config sd 0.00
+T = 1.2  MC-dropout sd 0.071  ensemble sd 0.079  config-to-config sd 0.42
+T = 1.4  MC-dropout sd 0.060  ensemble sd 0.084  config-to-config sd 0.46
+T = 1.6  MC-dropout sd 0.051  ensemble sd 0.067  config-to-config sd 0.42
+T = 1.8  MC-dropout sd 0.044  ensemble sd 0.052  config-to-config sd 0.40
+T = 2.0  MC-dropout sd 0.031  ensemble sd 0.042  config-to-config sd 0.33
+T = 2.2  MC-dropout sd 0.016  ensemble sd 0.028  config-to-config sd 0.28
+T = 2.4  MC-dropout sd 0.011  ensemble sd 0.016  config-to-config sd 0.20
+T = 2.6  MC-dropout sd 0.008  ensemble sd 0.011  config-to-config sd 0.19
+T = 2.8  MC-dropout sd 0.009  ensemble sd 0.012  config-to-config sd 0.14
+T = 3.0  MC-dropout sd 0.002  ensemble sd 0.006  config-to-config sd 0.07
+T = 3.2  MC-dropout sd 0.001  ensemble sd 0.002  config-to-config sd 0.00
+T = 3.4  MC-dropout sd 0.002  ensemble sd 0.003  config-to-config sd 0.05
+member crossings 1.33-1.40; mean 1.36 +/- 0.03 (SD of members)
+ensemble SD > dropout SD at 13/15 temperatures; exceptions: [(0.6, 0.0, 3e-05), (0.8, 1e-05, 2e-05)]
+T = 1.2-2.0: config SD / ensemble SD = 5.3-7.9, config SD / dropout SD = 6.0-10.7
+
+tab:nn-uq
+  1.0 & 1.00 & 0.001 & 0.002 & 0.00
+  1.4 & 0.40 & 0.060 & 0.084 & 0.46
+  1.8 & 0.25 & 0.044 & 0.052 & 0.40
+  2.4 & 0.05 & 0.011 & 0.016 & 0.20
+  3.0 & 0.01 & 0.002 & 0.006 & 0.07
+saved outputs/ch10_uncertainty.png
+
+=== exercises/E10_2_width_activation.py  (exit 0) ===
+4610 parameters
+network       params  loss ep1  loss ep30   AUC    acc
+ReLU 4            50     0.602      0.160  0.971  0.920
+ReLU 16          386     0.490      0.134  0.978  0.935
+ReLU 64         4610     0.297      0.126  0.979  0.935
+ReLU 256       67586     0.217      0.123  0.979  0.934
+tanh 64         4610     0.431      0.136  0.978  0.933
+
+=== exercises/E10_3_training_bugs.py  (exit 0) ===
+4610 parameters
+accuracy of 'always background': 0.800
+case                   loss ep1  loss ep30   AUC    acc
+correct loop              0.297      0.126  0.979  0.935
+no zero_grad              0.361      0.289  0.873  0.797
+softmax twice             0.472      0.366  0.978  0.935
+no scaling                0.663      0.239  0.945  0.892
+
+=== exercises/E10_4_ising_extremes.py  (exit 0) ===
+<|m|> at T = 2.4: 0.58
+fraction of configurations with m > 0: 1.6:0.00 1.7:1.00 1.8:0.00 1.9:0.00 2.0:0.00 2.1:0.00 2.2:0.00 2.3:0.00 2.4:0.85 2.5:0.56 2.6:0.50 2.7:0.50 2.8:0.56 2.9:0.45 3.0:0.47 3.1:0.51 3.2:0.47
+ends <= 1.8, >= 2.8: crossings [2.395 2.408 2.386]  (T_c = 2.269)
+ends <= 2.0, >= 2.6: crossings [2.36  2.352 2.357]  (T_c = 2.269)
+ends <= 1.6, >= 3.2: crossings [1.65 1.65 1.65]  (T_c = 2.269)
+   mean P by T (seed 0): 1.6:1.00 1.7:0.00 1.8:1.00 1.9:1.00 2.0:1.00 2.1:0.97 2.2:0.92 2.3:0.92 2.4:0.10 2.5:0.07 2.6:0.08 2.7:0.06 2.8:0.01 2.9:0.02 3.0:0.00 3.1:0.00 3.2:0.00
+ends <= 1.6, >= 3.2 with spin-flip augmentation: crossings [2.432 2.434 2.451]
+
+=== exercises/E10_6_dropout_rate_ends.py  (exit 0) ===
+dropout 0.05: val. acc 0.994, crossing 1.33, max MC-dropout SD 0.038 at T = 1.2
+dropout 0.20: val. acc 0.994, crossing 1.33, max MC-dropout SD 0.071 at T = 1.2
+dropout 0.50: val. acc 0.994, crossing 1.33, max MC-dropout SD 0.139 at T = 1.2
+ensemble with ends <= 1.0, >= 3.0: crossings [1.33 1.34 1.35 1.4  1.36], range 0.07, SD 0.028
+ensemble with ends <= 0.8, >= 3.2: crossings [1.25 1.21 1.16 1.11 1.13], range 0.14, SD 0.057
+
+=== 08_claims_checks.py  (exit 0) ===
+1  all eight listings ran as one notebook in 337 s; 01 7 s, 03 144 s, 04 2 s, 05 69 s, 06 104 s, 07 10 s
+    AUC = 0.9791
+    validation accuracy: 0.994  T* = 1.33
+    T* of members: [1.33 1.34 1.35 1.4  1.36]
+    physics=True: RMSE t<=3 0.036, t>3 0.111
+    gamma = 0.327 (true 0.3), omega_0 = 6.020 (true 6.007)
+2  parameters 4610; logistic regression on 4 features has 5 -> 922 times
+3  forward 0.41 ms, forward + backward 1.37 ms -> backward alone 2.4x a forward pass
+4  ReLU: max |d2x/dt2| over 200 points = 0
+4  tanh: max |d2x/dt2| over 200 points = 0.0485
+5  gradient norm at steps 10 / 100 / 200: correct 0.37 / 0.13 / 0.34; no zero_grad 4.8 / 11.9 / 18.3
+   softmax twice: best probability e/(1+e) = 0.731, loss floor -ln = 0.313 (observed final loss 0.366)
+6  shape rebuilt from the 435 distances (classical MDS): RMS error 1.3e-15 with a reflection allowed, 1.44 with rotations only; the mirror image has identical distances (max diff 0.0e+00)
+7  T = 1.4-2.2: fluctuation formula 2.62-3.14, finite differences 2.39-3.70; correlation over all 15 T 0.77
+8  T = 0.6: pivot acceptance 0.055, crankshaft/end 0.141
+8  T = 1.4: pivot acceptance 0.203, crankshaft/end 0.337
+8  T = 3.4: pivot acceptance 0.628, crankshaft/end 0.659
+9  after mc_dropout_predict: model.training = False
+10 mean shift across ends 0.30, across features 0.26; midpoint 1.90 - 1.33 = 0.57; 0.2 / 0.03 = 7, 0.6 / 0.03 = 20
+11 128 x 128 x 64 = 1,048,576 weights
+12 lambda 1e-05: RMSE t<=3 0.061, t>3 0.156, max|x| for t>4.5 0.02 (truth 0.25), gamma 0.297, omega_0 6.115
+12 lambda 1e-04: RMSE t<=3 0.052, t>3 0.141, max|x| for t>4.5 0.02 (truth 0.25), gamma 0.304, omega_0 6.052
+12 lambda 1e-03: RMSE t<=3 0.036, t>3 0.111, max|x| for t>4.5 0.07 (truth 0.25), gamma 0.327, omega_0 6.020
+12 lambda 1e-02: RMSE t<=3 0.036, t>3 0.100, max|x| for t>4.5 0.10 (truth 0.25), gamma 0.387, omega_0 6.008
+12 lambda 1e-01: RMSE t<=3 0.114, t>3 0.134, max|x| for t>4.5 0.06 (truth 0.25), gamma 0.598, omega_0 5.936

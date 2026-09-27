@@ -1,0 +1,235 @@
+# expected_output.txt  —  Ch.7, produced by: python run_chapter.py ch07_clustering --clean --with-exercises
+# Python 3.11.15 | numpy 2.4.4 | scipy 1.17.1 | pandas 3.0.2 + pyarrow 25.0.1 | scikit-learn 1.8.0 | matplotlib 3.10.9
+# All data SYNTHETIC (blobs, moons, polymer states, AFM force map; seeds in the listings).
+# E7.6 uses the SDSS table of ch06: here the SYNTHETIC STAND-IN. Result with the REAL Kaggle file:
+#   optional/expected_output_E7_6_real.txt.  Timings depend on the computer.
+
+=== 01_kmeans_elbow.py  (exit 0) ===
+cluster sizes: [200, 200, 200]
+centroids (scaled units):
+ [[-1.06 -0.22]
+ [ 1.31 -1.09]
+ [-0.25  1.31]]
+W(K) for K = 1..10: [1200.0, 325.9, 27.7, 24.1, 20.7, 17.8, 15.9, 14.3, 12.6, 11.4]
+W drops 1200 -> 326 -> 27.7; after K = 3 each extra cluster removes only 3.7 to 1.2
+saved outputs/ch07_kmeans_elbow.png
+
+=== 02_dbscan_hdbscan.py  (exit 0) ===
+DBSCAN eps=0.3: 2 clusters, 1 noise point(s), ARI vs y_moon = 0.996
+DBSCAN eps=0.35: 1 cluster(s) -> the two moons are chained together
+K-Means K=2: ARI = 0.495 (straight cut through both moons)
+HDBSCAN: 2 clusters, 6 noise points, ARI = 0.968, median membership strength 1.00
+saved outputs/ch07_moons.png
+
+=== 03_gmm_polymer.py  (exit 0) ===
+[0.49702243 0.29871073 0.20426684] [[ 2.19658013  2.52965009]
+ [ 5.01284441 12.11049306]
+ [ 3.51533708  6.0517311 ]] 46
+uncertain frames: 46 (1.5 %); by true state {'folded': 6, 'mid': 17, 'open': 23}
+component 0: mean [2.2  2.53], principal eigenvector (Rg, Ree) = [0.115 0.993], eigenvalues [0.036 0.302]
+component 1: mean [ 5.01 12.11], principal eigenvector (Rg, Ree) = [0.224 0.975], eigenvalues [0.089 4.176]
+component 2: mean [3.52 6.05], principal eigenvector (Rg, Ree) = [0.192 0.981], eigenvalues [0.067 1.584]
+BIC for K = 1..6: [18533, 14465, 14084, 14130, 14173, 14213] -> minimum at K = 3
+saved outputs/ch07_gmm_polymer.png
+
+=== 04_silhouette.py  (exit 0) ===
+K = 2: silhouette 0.718
+K = 3: silhouette 0.861
+K = 4: silhouette 0.682
+K = 5: silhouette 0.493
+K = 6: silhouette 0.323
+K = 7: silhouette 0.324
+best K = 3
+
+=== 05_afm_three_algorithms.py  (exit 0) ===
+[0.49702243 0.29871073 0.20426684] [[ 2.19658013  2.52965009]
+ [ 5.01284441 12.11049306]
+ [ 3.51533708  6.0517311 ]] 46
+K-Means  k=2 sil=0.372 WTA F1=0.709 MCC=0.319 soft F1=0.829 MCC=0.000
+K-Means  k=3 sil=0.411 WTA F1=0.773 MCC=0.559 soft F1=0.860 MCC=0.393
+K-Means  k=4 sil=0.326 WTA F1=0.502 MCC=0.355 soft F1=0.881 MCC=0.668
+K-Means  k=5 sil=0.262 WTA F1=0.354 MCC=0.269 soft F1=0.902 MCC=0.669
+GMM      k=2 sil=0.359 WTA F1=0.834 MCC=0.301 soft F1=0.834 MCC=0.301
+GMM      k=3 sil=0.355 WTA F1=0.790 MCC=0.582 soft F1=0.790 MCC=0.582
+GMM      k=4 sil=0.258 WTA F1=0.370 MCC=0.278 soft F1=0.847 MCC=0.645
+GMM      k=5 sil=0.226 WTA F1=0.763 MCC=0.552 soft F1=0.899 MCC=0.647
+Ward     k=2 sil=0.371 WTA F1=0.669 MCC=0.278 soft F1=0.829 MCC=0.000
+Ward     k=3 sil=0.405 WTA F1=0.717 MCC=0.509 soft F1=0.860 MCC=0.396
+Ward     k=4 sil=0.304 WTA F1=0.599 MCC=0.418 soft F1=0.885 MCC=0.674
+Ward     k=5 sil=0.271 WTA F1=0.221 MCC=0.196 soft F1=0.886 MCC=0.674
+
+scaffold fraction 0.708, exposed glass 0.070, paraffin 0.221
+H: 99.9th percentile of |x - median| / median of |x - median| = 6.0  (Gaussian: 4.9)
+S: 99.9th percentile of |x - median| / median of |x - median| = 7.4  (Gaussian: 4.9)
+A: 99.9th percentile of |x - median| / median of |x - median| = 7.8  (Gaussian: 4.9)
+
+DBSCAN on the full scaled map (min_samples=5):
+  eps=0.3: largest cluster 15927 of 16384 pixels (97.2 %), other clusters have at most 7 pixels, noise 418
+  eps=0.5: largest cluster 16256 of 16384 pixels (99.2 %), other clusters have at most 5 pixels, noise 123
+
+K-Means clusters in physical units (median H nm, S N/m, A nN):
+  k=2 cluster: 49.5 % of pixels, scaffold 56.2 %, glass  0.4 %, median (H, S, A) = [155.49   0.57   5.81]
+  k=2 cluster: 50.5 % of pixels, scaffold 85.2 %, glass 13.5 %, median (H, S, A) = [269.74   0.93   3.91]
+  k=3 cluster:  7.5 % of pixels, scaffold  8.0 %, glass 89.7 %, median (H, S, A) = [42.38  1.39  3.  ]
+  k=3 cluster: 46.7 % of pixels, scaffold 53.8 %, glass  0.3 %, median (H, S, A) = [151.26   0.57   5.88]
+  k=3 cluster: 45.8 % of pixels, scaffold 98.4 %, glass  0.3 %, median (H, S, A) = [280.21   0.88   4.07]
+
+internal indices (K-Means; GMM for BIC):
+  k=2 silhouette 0.372  Davies-Bouldin 1.024  Calinski-Harabasz 10820  GMM BIC 91405
+  k=3 silhouette 0.411  Davies-Bouldin 0.839  Calinski-Harabasz 10699  GMM BIC 90548
+  k=4 silhouette 0.326  Davies-Bouldin 0.964  Calinski-Harabasz 10169  GMM BIC 90339
+  k=5 silhouette 0.262  Davies-Bouldin 1.108  Calinski-Harabasz 8860  GMM BIC 88253
+  k=6 silhouette 0.259  Davies-Bouldin 1.132  Calinski-Harabasz 7883  GMM BIC 87338
+saved outputs/ch07_afm_maps.png
+
+=== 06_claims_checks.py  (exit 0) ===
+seed 2026 : {2: np.float64(32.86), 10: np.float64(2.79), 100: np.float64(0.44), 1000: np.float64(0.1)}   (book: 33, 2.8, 0.44, 0.10)
+other seeds, 200 repeats each (median and 10-90 % range):
+  D =    2: median  45.89   range  22.12 - 121.77
+  D =   10: median   2.38   range   1.92 -   3.47
+  D =  100: median   0.40   range   0.36 -   0.46
+  D = 1000: median   0.11   range   0.10 -   0.13
+
+Q7: Delta G / kT = -ln(0.2/0.5) = 0.92
+
+=== 07_claims_checks_pass2.py  (exit 0) ===
+[0.49702243 0.29871073 0.20426684] [[ 2.19658013  2.52965009]
+ [ 5.01284441 12.11049306]
+ [ 3.51533708  6.0517311 ]] 46
+1  KMeans n_init default: auto -> runs actually used: 1
+2  eps=0.3: 0 of 491 core points have neighbours in both moons
+2  eps=0.35: 8 of 496 core points have neighbours in both moons
+3  5th-neighbour distance: knee (max distance below the chord) 0.19; 90/95/99th percentiles [0.21 0.25 0.33]
+4  cluster_std=2.5: silhouette K=2,3,4 = [0.612 0.654 0.534]
+4  cluster_std=3.0: silhouette K=2,3,4 = [0.577 0.596 0.478]
+4  cluster_std=3.5: silhouette K=2,3,4 = [0.541 0.546 0.439]
+4  cluster_std=4.0: silhouette K=2,3,4 = [0.508 0.504 0.41 ]
+5  uniform D= 1: CH for K=2..7 = [6103, 8022, 10293, 12079, 13915, 16089]
+5  uniform D= 2: CH for K=2..7 = [1229, 1560, 1991, 1852, 1846, 1912]
+5  uniform D= 3: CH for K=2..7 = [694, 695, 757, 778, 835, 848]
+5  uniform D= 5: CH for K=2..7 = [351, 326, 315, 306, 300, 290]
+5  uniform D=10: CH for K=2..7 = [174, 148, 134, 125, 116, 111]
+6  gap statistic, blobs of code:kmeans -> K = 3
+   20 uniform data sets (600 points in a square) -> K chosen: {np.int64(1): np.int64(15), np.int64(2): np.int64(4), np.int64(3): np.int64(1)}
+7  pixels with negative silhouette: 0.4 %; next to a cluster boundary in the image: 93 % (all pixels 42 %)
+8  sigmoid of (x - median)/std      : ARI vs untransformed K-Means k=3 = 0.954
+8  sigmoid of (x - mean)/MAD        : ARI vs untransformed K-Means k=3 = 0.910
+8  sigmoid of (x - median)/(IQR/4)  : ARI vs untransformed K-Means k=3 = 0.827
+9  HDBSCAN label -1: 15.9 % of the subsample, scaffold  60 %, glass  23 %
+9  HDBSCAN label  0: 81.0 % of the subsample, scaffold  76 %, glass   0 %
+9  HDBSCAN label  1:  3.1 % of the subsample, scaffold   0 %, glass 100 %
+10 highest-mean-H cluster equals the winner-take-all cluster in 12 of 12 settings
+11 Ward k=2, subsample 2,000/5,000/10,000 x seeds 42,0,1,2,3: silhouette 0.364-0.372, MCC WTA 0.260-0.439, MCC soft 0.000-0.439
+11 Ward k=3, subsample 2,000/5,000/10,000 x seeds 42,0,1,2,3: silhouette 0.402-0.411, MCC WTA 0.490-0.643, MCC soft 0.388-0.643
+12 GMM k=2 small cluster: 15.5 % of pixels, holds 99 % of glass and 88 % of pixels beyond the 99th percentile in any channel
+
+=== exercises/E7_2_elbow_spread.py  (exit 0) ===
+cluster_std = 1.0: W(K=1..6) = [1200, 326, 28, 24, 21, 18]
+   silhouette K=2..7 = [0.718, 0.861, 0.682, 0.493, 0.323, 0.324] -> K* = 3
+cluster_std = 2.5: W(K=1..6) = [1200, 419, 153, 133, 115, 98]
+   silhouette K=2..7 = [0.612, 0.654, 0.534, 0.398, 0.323, 0.322] -> K* = 3
+saved outputs/E7_2_elbow_spread.png
+
+=== exercises/E7_3_moons_dbscan.py  (exit 0) ===
+K-Means K=2    : ARI 0.495  silhouette 0.488
+DBSCAN eps=0.2 : 2 cluster(s), noise 1.6 %, ARI 0.968  silhouette (noise excluded) 0.389
+DBSCAN eps=0.25: 2 cluster(s), noise 0.6 %, ARI 0.988  silhouette (noise excluded) 0.385
+DBSCAN eps=0.3 : 2 cluster(s), noise 0.2 %, ARI 0.996  silhouette (noise excluded) 0.383
+DBSCAN eps=0.35: 1 cluster(s), noise 0.2 %, ARI 0.000  silhouette (noise excluded)   -  
+5th-neighbour distance: median 0.13, 95th pct 0.25, 99th pct 0.33, max 0.51
+saved outputs/E7_3_moons.png
+
+=== exercises/E7_4_gmm_bic_covtypes.py  (exit 0) ===
+[0.49702243 0.29871073 0.20426684] [[ 2.19658013  2.52965009]
+ [ 5.01284441 12.11049306]
+ [ 3.51533708  6.0517311 ]] 46
+BIC K=1..6: [18533, 14465, 14084, 14130, 14173, 14213] -> K* = 3
+true state fractions: [0.499      0.19633333 0.30466667]
+full     : BIC   14084  ARI 0.968  weights [0.204 0.299 0.497]
+diag     : BIC   15462  ARI 0.965  weights [0.207 0.293 0.5  ]
+tied     : BIC   15861  ARI 0.907  weights [0.209 0.275 0.516]
+spherical: BIC   18610  ARI 0.951  weights [0.208 0.291 0.501]
+K-Means  : ARI 0.918  cluster fractions [0.218 0.275 0.507]
+
+=== exercises/E7_5_afm_protocol.py  (exit 0) ===
+[0.49702243 0.29871073 0.20426684] [[ 2.19658013  2.52965009]
+ [ 5.01284441 12.11049306]
+ [ 3.51533708  6.0517311 ]] 46
+step 1: internal indices only (reference map not used)
+  K-Means  k=2: silhouette 0.372  DB 1.024  CH 10820
+  K-Means  k=3: silhouette 0.411  DB 0.839  CH 10699
+  K-Means  k=4: silhouette 0.326  DB 0.964  CH 10169
+  K-Means  k=5: silhouette 0.262  DB 1.108  CH 8860
+  K-Means: silhouette -> k=3, Davies-Bouldin -> k=3, Calinski-Harabasz -> k=2; chosen k = 3 (silhouette)
+  GMM      k=2: silhouette 0.359  DB 2.233  CH 1925
+  GMM      k=3: silhouette 0.355  DB 1.738  CH 5855
+  GMM      k=4: silhouette 0.258  DB 1.606  CH 4886
+  GMM      k=5: silhouette 0.226  DB 3.490  CH 4227
+  GMM: silhouette -> k=2, Davies-Bouldin -> k=4, Calinski-Harabasz -> k=3; chosen k = 2 (silhouette)
+  Ward     k=2: silhouette 0.371  DB 1.041  CH 10759
+  Ward     k=3: silhouette 0.405  DB 0.836  CH 10550
+  Ward     k=4: silhouette 0.304  DB 1.003  CH 9965
+  Ward     k=5: silhouette 0.271  DB 1.122  CH 8641
+  Ward: silhouette -> k=3, Davies-Bouldin -> k=3, Calinski-Harabasz -> k=2; chosen k = 3 (silhouette)
+
+step 2: evaluation of the chosen k against the reference map
+  all-scaffold baseline: F1 0.829  MCC 0.000  balanced acc 0.500
+  K-Means  WTA : F1 0.773  MCC 0.559  balanced acc 0.806
+  K-Means  soft: F1 0.860  MCC 0.393  balanced acc 0.614
+  GMM      WTA : F1 0.834  MCC 0.301  balanced acc 0.620
+  GMM      soft: F1 0.834  MCC 0.301  balanced acc 0.620
+  Ward     WTA : F1 0.717  MCC 0.509  balanced acc 0.775
+  Ward     soft: F1 0.860  MCC 0.396  balanced acc 0.615
+
+step 3: K-Means k=3 clusters in physical units (median H nm, S N/m, A nN)
+  cluster 0:  7.5 %  scaffold  8.0 %  glass 89.7 %  median [42.38  1.39  3.  ]
+  cluster 1: 46.7 %  scaffold 53.8 %  glass  0.3 %  median [151.26   0.57   5.88]
+  cluster 2: 45.8 %  scaffold 98.4 %  glass  0.3 %  median [280.21   0.88   4.07]
+
+step 4: feature subsets (K-Means, k = 3, RobustScaler on the subset)
+  H  : MCC WTA 0.391  soft 0.602
+  S  : MCC WTA 0.425  soft 0.180
+  A  : MCC WTA 0.370  soft 0.433
+  HA : MCC WTA 0.573  soft 0.339
+  HSA: MCC WTA 0.559  soft 0.393
+saved outputs/E7_5_afm_maps.png
+
+=== exercises/E7_6_sdss_unsupervised.py  (exit 0) ===
+SYNTHETIC stand-in written by 05_sdss_data.py (not real SDSS data)
+
+K-Means K=3: ARI 0.340
+col_0  GALAXY    QSO   STAR
+row_0                      
+0       33476    290   7384
+1         125  18671  10027
+2       25843      0   4183
+
+GMM BIC K=1..10: [168329, 159059, 156049, 150464, 148989, 144696, 145469, 143673, 143551, 143946] -> K* = 9
+GMM K=9: ARI 0.300
+col_0  GALAXY    QSO   STAR   u-g   g-r
+row_0                                  
+0        2678    360  12658  1.68  0.62
+1        1262      0   1235  2.39  1.23
+2           3  13641      0  0.16  0.13
+3       14617      2    156  1.98  1.08
+4           8    259   6835  1.05  0.11
+5       19625     43    100  1.32  0.56
+6          24   4643    147  0.90  0.30
+7       15234     12    455  1.82  0.89
+8        5993      1      8  1.44  0.77
+most quasar-rich GMM cluster: 100 % QSO, holds 72 % of all QSOs, median u-g 0.16
+
+=== exercises/E7_7_bootstrap_stability.py  (exit 0) ===
+[0.49702243 0.29871073 0.20426684] [[ 2.19658013  2.52965009]
+ [ 5.01284441 12.11049306]
+ [ 3.51533708  6.0517311 ]] 46
+  data seed 2026  K-Means k=2: ARI mean 0.985  min 0.952  unstable pixels 1.0 %
+  data seed 2026  K-Means k=3: ARI mean 0.985  min 0.964  unstable pixels 1.1 %
+  data seed 2026  K-Means k=4: ARI mean 0.973  min 0.938  unstable pixels 2.6 %
+  data seed 2026  K-Means k=5: ARI mean 0.893  min 0.487  unstable pixels 7.6 %
+  data seed 2026  GMM     k=3: ARI mean 0.953  min 0.894  unstable pixels 4.2 %
+
+K-Means k=3 unstable pixels: 175; on a scaffold/substrate edge in the image: 13 % (all pixels: 9 %)
+  reference cluster of the unstable pixels: {'glass-like (low)': 12, 'low mixed': 97, 'high scaffold': 66}
+saved outputs/E7_7_unstable_pixels.png
+

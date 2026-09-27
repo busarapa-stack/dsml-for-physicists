@@ -1,0 +1,131 @@
+# expected_output.txt  —  Ch.11, produced by: python run_chapter.py ch11_cnn --clean --with-exercises
+# Python 3.11.15 | numpy 2.4.4 | scipy 1.17.1 | scikit-learn 1.8.0 | torch 2.14.0+cu130 (CPU)
+# All images SYNTHETIC (toy galaxies, toy rice grains); E11.1 uses the Chapter 10 polymer chain (../ch10_neural_networks/data/chain.npz).
+# Total run about 25 minutes on two CPU cores (ensemble of five CNNs about 12 min), plus about 30 minutes for
+# 08_claims_checks.py (second pass, appended below). Timings depend on the computer.
+# CNN training is NOT bit-reproducible across computers: on Apple Silicon the same seed gave CNN test 0.929 (0.959 here);
+# the spread over seeds 0-4 here is 0.953-0.990 (see 08_claims_checks.py and README). PyTorch results can differ across platforms; E11.1 also inherits the Chapter 10 chain's
+# sensitivity to rounding (see ../ch10_neural_networks/README.md). optional/galaxy10_read.py is not run here (needs the 2.7 GB file).
+
+=== 01_cnn_architecture.py  (exit 0) ===
+MLP 532997 parameters
+GalaxyCNN 60549 parameters
+ratio MLP / CNN = 8.80; head 325; MLP first layer weights 524,288; 256x256x3 into 128 units: 25,165,824
+per layer (CNN): [160, 4640, 18496, 36928]
+
+=== 02_galaxy_images.py  (exit 0) ===
+generated 8250 images in 3.5 s; shapes (5000, 64, 64), (1250, 64, 64), (2000, 64, 64); class counts [1000 1000 1000 1000 1000]
+saved data/galaxies.npz
+saved outputs/ch11_galaxy_examples.png
+
+=== 03_train_evaluate.py  (exit 0) ===
+MLP: test 0.928, shifted 0.393
+[[382   0   0   1  17]
+ [  0 374  13   8   5]
+ [  0  40 360   0   0]
+ [  0   2   0 379  19]
+ [  9  20   0  10 361]]
+CNN: test 0.959, shifted 0.965
+[[399   0   0   0   1]
+ [  0 332  29   4  35]
+ [  0   1 399   0   0]
+ [  0   0   0 396   4]
+ [  0   3   0   6 391]]
+saved data/MLP.pt, data/CNN.pt
+training time MLP (15 epochs): 4 s
+training time CNN (30 epochs): 132 s
+
+=== 04_small_augmentation.py  (exit 0) ===
+augmentation=False: best val 0.814, last val 0.749, test 0.737
+augmentation=True: best val 0.829, last val 0.778, test 0.771
+
+=== 05_transfer_rice.py  (exit 0) ===
+size features + logistic regression: 0.8
+scratch  : test accuracy [0.329 0.274 0.336], mean 0.313
+frozen   : test accuracy [0.37  0.388 0.464], mean 0.407
+fine-tune: test accuracy [0.466 0.426 0.622], mean 0.505
+saved outputs/ch11_rice_examples.png
+
+=== 06_gradcam_shortcut.py  (exit 0) ===
+validation accuracy (with the artefact): 0.968
+clean test: 0.949  barred recall: 0.91
+spot on every test image: accuracy 0.2  fraction called barred 1.0
+clean CNN: share of Grad-CAM in the corner = 0.052
+shortcut CNN: share of Grad-CAM in the corner = 0.532
+clean CNN: barred recall 0.978; corner area 0.062
+saved outputs/ch11_gradcam.png
+
+=== 07_ensemble_ood.py  (exit 0) ===
+member 0 0.958
+member 1 0.956
+member 2 0.958
+member 3 0.952
+member 4 0.99
+ensemble accuracy 0.979 | entropy: correct 0.137 wrong 0.68
+test images with max prob > 0.9: 0.833
+stars max prob > 0.9: 0.94 | predicted classes: [  0 200   0   0   0]
+mergers max prob > 0.9: 0.88 | predicted classes: [192   0   0   6   2]
+five members trained and evaluated in 711 s
+
+=== exercises/E11_1_polymer_cnn.py  (exit 0) ===
+parameters: CNN 5954, MLP of code:polymer-nn 32194
+ends <= 1.0, >= 3.0: validation [0.988 0.992 0.983], crossings [1.6  1.56 1.47]
+ends <= 0.8, >= 3.2: validation [0.997 1.    1.   ], crossings [1.28 1.31 1.21]
+ends <= 1.2, >= 2.8: validation [0.978 0.972 0.967], crossings [1.71 1.49 1.75]
+all ends and seeds: 1.21-1.75
+
+=== exercises/E11_2_galaxy10_params.py  (exit 0) ===
+MLP 532997 parameters
+GalaxyCNN 60549 parameters
+3-band GalaxyCNN: conv layers [448, 4640, 18496, 36928], head 650, total 61,162
+draft output shape for a 69x69 image before flattening: (1, 128, 8, 8)
+draft: layers [896, 18496, 73856, 2097408, 2570], total 2,193,226; first dense layer 95.6 %; ratio 35.9
+
+=== exercises/E11_5_rice_arithmetic.py  (exit 0) ===
+correct per variety: [61 50 89 63] total 263 of 312 = 84.3 %
+recalls from the rounded counts: [0.938 0.649 0.989 0.788] balanced accuracy 0.841
+training set 725 + validation 312 = 1037 images
+
+=== exercises/E11_6_gradcam_regions.py  (exit 0) ===
+area share of the r < 20 disc: 0.309
+smooth round  : share of Grad-CAM inside 0.15
+smooth cigar  : share of Grad-CAM inside 0.22
+edge-on disk  : share of Grad-CAM inside 0.68
+spiral        : share of Grad-CAM inside 0.86
+barred spiral : share of Grad-CAM inside 0.59
+
+=== 08_claims_checks.py  (exit 0) ===
+1  eight listings as one notebook: 1617 s
+    CNN: test 0.959, shifted 0.965
+    MLP: test 0.928, shifted 0.393
+    augmentation=False: best val 0.814, last val 0.749, test 0.737
+    augmentation=True: best val 0.829, last val 0.778, test 0.771
+    fine-tune: test accuracy [0.466 0.426 0.622], mean 0.505
+    shortcut CNN: share of Grad-CAM in the corner = 0.532
+    ensemble accuracy 0.979 | entropy: correct 0.137 wrong 0.68
+    stars max prob > 0.9: 0.94 | predicted classes: [  0 200   0   0   0]
+    mergers max prob > 0.9: 0.88 | predicted classes: [192   0   0   6   2]
+2  n=64 k=3 p=1 s=1: torch 64, formula 64; params 448 = 16(3*9+1) = 448
+2  n=64 k=5 p=0 s=1: torch 60, formula 60; params 1216 = 16(3*25+1) = 1216
+2  n=64 k=3 p=1 s=2: torch 32, formula 32; params 448 = 16(3*9+1) = 448
+2  n=69 k=3 p=1 s=1: torch 69, formula 69; params 448 = 16(3*9+1) = 448
+3  receptive fields: [('conv', 3), ('pool', 4), ('conv', 8), ('pool', 10), ('conv', 18), ('pool', 22), ('conv', 38)]
+4  shift by 5 px: max |conv(shift x) - shift conv(x)| inside the image = 0.0e+00
+5  MLP first layer 524,416 of 532,997 (98.4 %); CNN head 325
+6  CNN centred 0.9585, shifted 0.9650: difference +0.0065, binomial SE of one accuracy 0.0045
+7  best validation - test: 7.7 and 5.8 points (numbers of code:small-aug)
+8  last feature maps (8, 8); max |Grad-CAM - CAM| (both unit sum) = 2.9e-10
+9  ensemble 0.979 above 4 of 5 members
+10 CNN seeds 0-4 (the ensemble members):
+   seed 0: test 0.959, shifted 0.965; largest errors cigar->barred 35, cigar->edge-on 29
+   seed 1: test 0.956, shifted 0.948; largest errors cigar->edge-on 36, barred->spiral 26
+   seed 2: test 0.959, shifted 0.912; largest errors barred->cigar 28, cigar->edge-on 17
+   seed 3: test 0.953, shifted 0.924; largest errors cigar->barred 43, barred->spiral 13
+   seed 4: test 0.990, shifted 0.991; largest errors barred->cigar 9, barred->spiral 4
+   MLP seeds 0-4 (15 epochs, lr 1e-3 as in code:cnn-train):
+   seed 0: test 0.928, shifted 0.393; largest errors edge-on->cigar 40, barred->cigar 20
+   seed 1: test 0.921, shifted 0.376; largest errors edge-on->cigar 40, spiral->barred 24
+   seed 2: test 0.927, shifted 0.372; largest errors edge-on->cigar 31, barred->cigar 22
+   seed 3: test 0.930, shifted 0.383; largest errors edge-on->cigar 37, spiral->barred 19
+   seed 4: test 0.920, shifted 0.396; largest errors edge-on->cigar 37, barred->cigar 30
+   mean test accuracy: CNN 0.963 (range 0.953-0.990), MLP 0.925 (range 0.920-0.930)

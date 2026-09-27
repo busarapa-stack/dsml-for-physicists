@@ -1,0 +1,143 @@
+# expected_output.txt  —  Ch.1, produced by: python run_chapter.py ch01_intro --clean
+# Python 3.11.15 | numpy 2.4.4 | h5py 3.16.0 | astropy 8.0.1 | uproot 5.7.6 | awkward 2.14.0 | matplotlib 3.10.9
+
+=== 01_make_sample_files.py  (exit 0) ===
+dimuon_sample.root                             182.0 kB
+H-H1_SYNTH_4_V1-1126259446-32.hdf5            1040.1 kB
+sdss_like_image_r.fits                         261.6 kB
+sdss_like_spectrum.fits                         53.4 kB
+mp_like_mp-149.json                              0.4 kB
+
+=== 02_inspect_root.py  (exit 0) ===
+Tree 'Events': 5000 events
+  nMuon        int32_t
+  Muon_pt      float[]
+  Muon_eta     float[]
+  Muon_phi     float[]
+  Muon_mass    float[]
+  Muon_charge  int32_t[]
+
+nMuon  number_of_events
+    1   392
+    2   4092
+    3   516
+first 3 events, Muon_pt: [[59.98027801513672, 38.23411178588867], [7.008731842041016], [39.96934127807617, 85.73297119140625]]
+
+(a) pad/clip to 2 muons -> shape (5000, 2) | events that lose muons: 516
+(b) keep only events with nMuon == 2 -> 4092 rows
+(c) explode to one row per muon -> 10124 rows
+
+opposite-charge pairs: 3805; with 81 < m < 101 GeV: 2841
+median mass in window: 91.09 GeV/c^2 (Z = 91.19)
+saved outputs/ch01_dimuon_mass.png
+
+=== 03_inspect_hdf5.py  (exit 0) ===
+H-H1_SYNTH_4_V1-1126259446-32.hdf5
+meta/
+  Description    SYNTHETIC strain for teaching (layout of a GWOSC file)
+  DescriptionURL https://gwosc.org/
+  Detector       H1
+  Duration       32
+  GPSstart       1126259446
+  Observatory    H
+  Type           StrainTimeSeries
+  UTCstart       2015-09-14T09:50:29
+quality/
+  injections/
+    InjShortnames  array shape=(5,) dtype=|S17
+    Injmask        array shape=(32,) dtype=uint32
+  simple/
+    DQShortnames   array shape=(7,) dtype=|S10
+    DQmask         array shape=(32,) dtype=uint32
+strain/
+  Strain         array shape=(131072,) dtype=float64
+     @Npoints = 131072
+     @Xlabel = GPS time
+     @Xspacing = 0.000244140625
+     @Xstart = 1126259446
+     @Xunits = second
+     @Ylabel = Strain
+     @Yunits = 
+
+samples = 131,072  (expected 32 s x 4096 Hz = 131,072)
+sampling interval from attribute Xspacing = 0.000244140625 s -> 4096 Hz
+DQmask: 32 values (one per second), all == 127 (7 flags passed): True
+dL = h L = 1e-21 x 4000 m = 4.0e-18 m
+proton diameter / dL = 250  -> 'several hundred times smaller'
+saved outputs/ch01_strain.png
+
+=== 04_inspect_fits.py  (exit 0) ===
+Filename: code/ch01_intro/data/sdss_like_image_r.fits
+No.    Name      Ver    Type      Cards   Dimensions   Format
+  0  PRIMARY       1 PrimaryHDU      11   (256, 256)   float32   
+
+header (compare with code:fits-header):
+  SIMPLE  =                 True  / conforms to FITS standard
+  NAXIS   =                    2  / number of array dimensions
+  NAXIS1  =                  256  / 
+  NAXIS2  =                  256  / 
+  RA      =        179.689453125  / Right Ascension [deg]
+  DEC     =        0.28563112068  / Declination [deg]
+  FILTER  =                  'r'  / r-band
+  EXPTIME =                53.91  / exposure time [s]
+
+image shape (256, 256), dtype >f4
+pixel values: min -5.0, median 0.00, max 46.0
+counts per second at the brightest pixel: 0.85   <- needs EXPTIME from the header
+
+Filename: code/ch01_intro/data/sdss_like_spectrum.fits
+No.    Name      Ver    Type      Cards   Dimensions   Format
+  0  PRIMARY       1 PrimaryHDU       7   ()      
+  1  COADD         1 BinTableHDU     16   3841R x 3C   [E, E, E]   
+
+spectrum: 3841 pixels, 3800-9200 Angstrom
+wavelength step grows with lambda: 0.874 A at blue end, 2.115 A at red end (constant step in log10)
+flux at H-alpha 6563 A is 0.67 of the local median -> absorption line
+saved outputs/ch01_fits_image_spectrum.png
+
+=== 05_inspect_json.py  (exit 0) ===
+material_id                  'mp-149'
+formula_pretty               'Si'
+symmetry:
+    crystal_system               'Cubic'
+    symbol                       'Fd-3m'
+    number                       227
+formation_energy_per_atom    0.0
+energy_above_hull            0.0
+is_stable                    True
+band_gap                     None
+density                      None
+
+nested access: rec['symmetry']['number'] = 227
+
+sanity checks
+  pure element -> formation energy 0 : OK
+  e_above_hull == 0 <=> is_stable     : OK
+  fields still to fetch from the API  : ['band_gap', 'density']
+
+reminder: band_gap from GGA-DFT is systematically lower than experiment; a model trained on it learns that bias too (veracity).
+
+=== 06_crystal_graph.py  (exit 0) ===
+atoms (nodes)            : 64
+edges                    : 128
+degree of every node     : [4]  (diamond -> 4)
+nearest-neighbour length : 2.352 A  (a*sqrt(3)/4 = 2.352 A)
+edges per atom           : 2.0  (= 4/2, each bond shared)
+
+first 5 edges (i, j, length in A):
+   0  4 2.352
+   0 29 2.352
+   0 46 2.352
+   0 55 2.352
+   1  4 2.352
+
+=== 07_compare_formats.py  (exit 0) ===
+file                                format  modality                        shape                     size_kB  metadata_items
+dimuon_sample.root                  ROOT    tabular (jagged)                5000 events x 6 branches  182.0    1 (tree title)
+H-H1_SYNTH_4_V1-1126259446-32.hdf5  HDF5    time series                     131072 samples            1040.1   15            
+sdss_like_image_r.fits              FITS    image                           256x256                   261.6    11            
+sdss_like_spectrum.fits             FITS    spectrum                        3841 wavelengths          53.4     23            
+mp_like_mp-149.json                 JSON    tabular (one row per material)  8 top-level fields        0.4      -             
+
+saved outputs/ch01_format_summary.csv
+

@@ -1,0 +1,123 @@
+# expected_output.txt  —  Ch.2, produced by: python run_chapter.py ch02_programming --clean --with-exercises
+# Python 3.11.15 | numpy 2.4.4 | scipy 1.17.1 | matplotlib 3.10.9
+# Lines with timings (loop vs vectorized, E2.3 time column) depend on the computer.
+
+=== 01_env_check.py  (exit 0) ===
+Python version : 3.11.15
+NumPy version  : 2.4.4
+SciPy version  : 1.17.1
+Matplotlib ver.: 3.10.9
+
+g = 9.80665 m/s^2 (standard gravity)
+h = 6.626070e-34 J s
+c = 299792458.0 m/s
+
+=== 02_vectorization.py  (exit 0) ===
+N = 1,000,000 particles
+loop       : KE = 7.489586e+05 J   time 0.351 s
+vectorized : KE = 7.489586e+05 J   time 0.0089 s
+same result (relative difference 3.4e-15); speed-up on this computer = 40x
+3D: v has shape (1000000, 3); KE = 2.249219e+06 J (equipartition check: KE/N = 2.249 ~ 3/2 * <m> * 1 = 2.250)
+
+broadcast 1D: scalars x0, v0, a with t(1000,) -> x(1000,)
+broadcast 2D: theta(3,)[:, None] with t(200,)[None, :] -> y(3, 200)
+max |y_broadcast - y_loop| = 0.0e+00
+
+=== 03_constants.py  (exit 0) ===
+g   = 9.80665 m/s^2
+h   = 6.626070e-34 J s
+c   = 299792458.0 m/s
+e   = 1.602177e-19 C
+k_B = 1.380649e-23 J/K
+N_A = 6.022141e+23 1/mol
+speed of light in vacuum           2.9979245800e+08 m s^-1       +- 0.0e+00
+electron mass                      9.1093837139e-31 kg           +- 2.8e-40
+Newtonian constant of gravitation  6.6743000000e-11 m^3 kg^-1 s^-2 +- 1.5e-15
+
+local gravity versus the standard value:
+  equator         lat  0.00 deg : g = 9.7803 m/s^2 (-0.27 % vs standard)
+  Bangkok         lat 13.75 deg : g = 9.7832 m/s^2 (-0.24 % vs standard)
+  Kamphaeng Saen  lat 14.02 deg : g = 9.7834 m/s^2 (-0.24 % vs standard)
+  pole            lat 90.00 deg : g = 9.8322 m/s^2 (+0.26 % vs standard)
+
+=== 04_projectile.py  (exit 0) ===
+R(45 deg) from code  = 40.7886 m
+R = v0^2/g = 400/9.80665 = 40.7886 m  -> match: True
+R(15) = 20.3943 m, R(75) = 20.3943 m  -> equal: True
+R(30) = 35.3240 m, R(60) = 35.3240 m  -> equal: True
+saved outputs/ch02_projectile.png
+
+=== 05_free_fall_solve_ivp.py  (exit 0) ===
+steps accepted: 200 output points, 32 function evaluations
+max |x_num - x_exact| = 9.9e-14 m
+(a constant acceleration is integrated exactly by RK45, so the error is round-off)
+with default tolerances: max error = 1.1e-13 m, 38 evaluations
+-> for free fall the defaults are fine; 06_oscillator_energy.py shows a case where they are not
+
+=== 06_oscillator_energy.py  (exit 0) ===
+Undamped: relative energy drift = 3.06e-08
+Damped: gamma_set = 0.10, gamma_fit = 0.1001
+
+Default rtol=1e-3, atol=1e-6, 20 periods: energy varies by 0.35 %
+rtol=1e-9, atol=1e-11,        20 periods: energy varies by 3.1e-06 %
+function evaluations: 806 (default) vs 15656 (tight)
+
+Damped E(t) / fitted exponential ranges from 0.983 to 1.019 -> small steps: energy is lost fastest where |v| is largest
+oscillator.py reproduces these results exactly
+
+=== 07_noise.py  (exit 0) ===
+1000 points, sigma_y = 0.02 m
+sample std of the noise = 0.01978 m (expected 0.02)
+first three noise values: [ 0.00609 -0.0208   0.01501]
+re-created with seed 42 -> identical: True
+
+=== 08_figures.py  (exit 0) ===
+errorbar: 21 points, 18 within 1 sigma of theory (expected 14 +- 2; with only 21 points this count fluctuates a lot)
+fill_between: 2000 points, 68.7 % inside the ±sigma band
+saved outputs/ch02_mpl_oo.png             61.2 kB
+saved outputs/ch02_errorbar.png           57.9 kB
+saved outputs/ch02_fillbetween.png        96.7 kB
+saved outputs/ho_comparison.pdf           41.1 kB
+saved outputs/ho_comparison.png          243.6 kB
+
+=== 09_random_seed.py  (exit 0) ===
+Generator(seed=42): mean -0.02889, first +0.30472
+legacy seed(42)   : mean +0.01933, first +0.49671
+-> the same seed number gives DIFFERENT numbers in the two systems; a seed is only meaningful together with the generator that uses it
+
+adding one extra random draw in a helper function:
+  separate Generators: b unchanged = True
+  global legacy state: b unchanged = False
+
+=== exercises/E2_2_drag.py  (exit 0) ===
+b = 0.1 1/s : range = 34.08 m, flight time = 2.758 s
+b = 0.0 1/s : range = 40.79 m, flight time = 2.884 s
+no-drag formula v0^2/g = 40.79 m
+with b = 0.1 the best angle is 42.5 deg (range 34.21 m), not 45 deg
+
+=== exercises/E2_3_rtol.py  (exit 0) ===
+ rtol    atol   max|dE/E0| (100 T)  at 10 T    first > 1e-6   evals   time
+1e-03  1e-05     1.25e-02         1.25e-03  t =   0.04 s    3914   0.04 s
+1e-06  1e-08     1.55e-04         1.55e-05  t =   0.68 s   22118   0.20 s
+1e-09  1e-11     1.53e-07         1.53e-08  never        78314   0.77 s
+-> the error grows about linearly with time; for |dE/E0| <= 1e-6 over 100 periods only rtol = 1e-9 works (rtol = 1e-6 already fails in the first period)
+saved outputs/E2_3_energy_error.png
+
+=== exercises/E2_4_gamma_fit.py  (exit 0) ===
+ gamma   gamma/omega   T_sim   gamma_fit   rel. error
+  0.05      0.0080    20.0     0.05002     +0.04 %
+  0.10      0.0159    20.0     0.10010     +0.10 %
+  0.50      0.0796    16.0     0.51153     +2.31 %
+  2.00      0.3183     4.0     2.02796     +1.40 %
+-> the exponential is the average trend; it fits well only when gamma << omega (P2b)
+
+=== exercises/E2_5_error_band.py  (exit 0) ===
+67.8 % of the noisy points lie inside the ±sigma band (expected 68.3 %)
+saved outputs/ho_with_error_band.pdf
+
+=== exercises/E2_10_seed.py  (exit 0) ===
+seed 7 twice: -0.072280, -0.072280 -> identical: True
+20 seeds: -0.048 -0.054 -0.022 +0.038 -0.010 +0.002 -0.013 -0.072 -0.029 +0.006 -0.069 +0.016 +0.013 +0.014 -0.011 +0.015 -0.020 +0.013 -0.025 -0.038
+spread of the 20 means: std = 0.0305   (theory 1/sqrt(1000) = 0.0316)
+smallest -0.072, largest +0.038: a single seed could have given any value in this range
+

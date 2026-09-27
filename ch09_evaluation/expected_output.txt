@@ -1,0 +1,195 @@
+# expected_output.txt  —  Ch.9, produced by: python run_chapter.py ch09_evaluation --clean --with-exercises
+# Python 3.11.15 | numpy 2.4.4 | scipy 1.17.1 | scikit-learn 1.8.0 | pymc 5.28.5 | arviz 0.23.4
+# All data SYNTHETIC (AR(1) runs, damped oscillator of Ch.5, Ising Metropolis/Wang-Landau of Ch.4, toy Higgs of Ch.6, Rouse chain of Ch.8).
+# PyMC progress bars and warnings removed. Total run about 15 minutes on two cores. Timings depend on the computer.
+
+=== 01_blocked_cv.py  (exit 0) ===
+[0] shuffled 0.423
+[0] blocked 0.507
+[0] new run 0.564
+[0, 1] shuffled 0.182
+[0, 1] blocked 0.584
+[0, 1] new run 0.655
+stationary sd of the correlated noise: 0.496 (floor for any model on a new run); sample sd in this run 0.457
+=== 02_information_criteria.py  (exit 0) ===
+gamma = 0.2858 +/- 0.0076 1/s
+omega = 6.0095 +/- 0.0074 rad/s
+Chapter 5 data: 200 points in 10 s, sigma 0.05 m (tab:ic-damped)
+model  k   chi2_min  chi2_red     AIC      BIC   CV blocked  CV shuffled
+M1     3    2567.1    13.03   2573.1   2583.0     0.1971      0.1822
+M2     4     233.2     1.19    241.2    254.4     0.0561      0.0558
+M3     5     232.3     1.19    242.3    258.8     0.0563      0.0562
+M4     8     222.2     1.16    238.2    264.6     0.0558      0.0557
+M4 local minima found: 30 distinct chi2 values from 222.2 to 231.3 (+ worse ones)
+best M4 second term: B = 0.005 m, gamma2 = -0.181 1/s, omega2 = 19.48 rad/s
+M3 offset c = 0.003 +/- 0.004 m
+Wilks test M2 -> M3: delta chi2 = 0.9, 1 dof, p = 0.34
+AIC(M2) - AIC(M4) = 3.0; BIC(M4) - BIC(M2) = 10.2; BIC(M3) - BIC(M2) = 4.4
+chi2 drop M2 -> M4: 11.0; AIC penalty for 4 extra parameters 8, BIC penalty 21.2
+=== 03_nested_cv.py  (exit 0) ===
+[0.59  0.493]
+best inner score > 0.5 in 17 of 20 data sets; grid of 36 (C, gamma) pairs
+=== 04_bootstrap_q.py  (exit 0) ===
+gamma = 0.2858 +/- 0.0076 1/s
+omega = 6.0095 +/- 0.0074 rad/s
+SE(gamma), SE(omega): [0.0083 0.0073]
+Q 95% percentile interval: [ 9.95 11.16]
+curve_fit SE(gamma), SE(omega): [0.0076 0.0074]
+tab:boot-q (true Q = 10):
+  200 points, sigma 0.05: best Q 10.51, gamma 0.286 +/- 0.008; linear [9.96, 11.07]; pairs [9.95, 11.16]; parametric [10.00, 11.10]  (fits converged (1000, 1000))
+   60 points, sigma 0.4: best Q 13.90, gamma 0.210 +/- 0.081; linear [3.34, 24.46]; pairs [5.93, 78.65]; parametric [6.47, 50.12]  (fits converged (1000, 1000))
+=== 05_mc_tau.py  (exit 0) ===
+<e> = -1.4139, tau_int = 17.5 sweeps (window 88)
+SE naive = 0.00122, SE with tau = 0.00721
+<e> block-bootstrap SE 0.00669 95% CI [-1.427  -1.4007]
+C_v/N block-bootstrap SE 0.0411 95% CI [1.3511 1.5113]
+N_eff = 572 of 20000; corrected / naive SE = 5.9
+blocking SE of <e> (levels 0, 1, 2, ...): [0.00122 0.00164 0.0022  0.0029  0.00374 0.00468 0.00562 0.00625 0.00691
+ 0.00708 0.00734]
+block bootstrap SE of <e>, blocks of   50: 0.00530
+block bootstrap SE of <e>, blocks of  100: 0.00614
+block bootstrap SE of <e>, blocks of  200: 0.00669
+block bootstrap SE of <e>, blocks of  500: 0.00707
+block bootstrap SE of <e>, blocks of 1000: 0.00707
+C_v/N = 1.436; single-point bootstrap SE 0.0138
+tab:mc-tau   T   <e>      tau_int  SE naive  SE tau   SE block | C_v/N  SE single  SE block
+           2.0  -1.7469    3.4   0.00074   0.0019   0.0018 | 0.704    0.0076    0.0150
+           2.3  -1.4139   17.5   0.00122   0.0072   0.0067 | 1.436    0.0138    0.0411
+           3.0  -0.8165    2.2   0.00084   0.0018   0.0017 | 0.398    0.0040    0.0061
+=== 06_wang_landau_seeds.py  (exit 0) ===
+exact: C_v/N peak 0.8165 at T = 2.439
+  seed 0: peak 0.8040 at T = 2.438 (36000 sweeps)
+  seed 1: peak 0.8112 at T = 2.447 (34000 sweeps)
+  seed 2: peak 0.8079 at T = 2.467 (34000 sweeps)
+  seed 3: peak 0.7929 at T = 2.483 (36000 sweeps)
+  seed 4: peak 0.8406 at T = 2.416 (33000 sweeps)
+  seed 5: peak 0.8171 at T = 2.456 (36000 sweeps)
+  seed 6: peak 0.8155 at T = 2.446 (38000 sweeps)
+  seed 7: peak 0.8204 at T = 2.433 (33000 sweeps)
+  seed 8: peak 0.8170 at T = 2.450 (36000 sweeps)
+  seed 9: peak 0.8157 at T = 2.409 (33000 sweeps)
+single runs 0.793-0.841; mean 0.8142 +/- 0.0039 (sd 0.0123); peak T 2.444 +/- 0.007
+=== 07_mcmc_hand.py  (exit 0) ===
+gamma = 0.2858 +/- 0.0076 1/s
+omega = 6.0095 +/- 0.0074 rad/s
+acceptance: 0.30158
+A     median 0.9612  95% [0.9266, 0.9967]  tau_int 7.3
+gamma median 0.2861  95% [0.2712, 0.3017]  tau_int 7.1
+omega median 6.0095  95% [5.9950, 6.0238]  tau_int 6.9
+phi   median 0.4818  95% [0.4477, 0.5149]  tau_int 7.3
+posterior sd: gamma 0.0078, omega 0.0073; curve_fit SE 0.0076, 0.0074
+independent samples ~ 3146 of 45000 (1 in 14)
+=== 08_pymc_oscillator.py  (exit 0) ===
+gamma = 0.2858 +/- 0.0076 1/s
+omega = 6.0095 +/- 0.0074 rad/s
+        mean     sd  hdi_2.5%  hdi_97.5%  ...  mcse_sd  ess_bulk  ess_tail  r_hat
+A      0.961  0.020     0.922      1.002  ...      0.0    5801.0    4967.0    1.0
+gamma  0.286  0.009     0.269      0.303  ...      0.0    5596.0    5117.0    1.0
+omega  6.009  0.008     5.994      6.026  ...      0.0    6276.0    5041.0    1.0
+phi    0.482  0.020     0.444      0.520  ...      0.0    6226.0    5060.0    1.0
+sigma  0.055  0.003     0.049      0.060  ...      0.0    6933.0    5749.0    1.0
+[5 rows x 9 columns]
+gamma posterior sd 0.0088; ess_bulk [5596.0, 6933.0]
+posterior predictive p-value, sum (resid/sigma)^2     : 0.52
+posterior predictive p-value, max |resid/sigma|       : 0.12
+posterior predictive p-value, lag-1 resid correlation : 0.31
+az.compare, loo:
+    rank  elpd_loo  p_loo  elpd_diff  weight     se    dse
+M2     0    294.90   4.66       0.00     1.0  10.69   0.00
+M3     1    294.36   5.56       0.54     0.0  10.73   0.86
+M1     2     55.56   4.89     239.34     0.0  12.54  16.54
+az.compare, waic:
+    rank  elpd_waic  p_waic  elpd_diff  weight     se    dse
+M2     0     294.91    4.65       0.00     1.0  10.68   0.00
+M3     1     294.37    5.54       0.53     0.0  10.73   0.86
+M1     2      55.56    4.89     239.35     0.0  12.54  16.54
+max Pareto k: {'M1': 0.17, 'M2': 0.24, 'M3': 0.35}
+=== 09_delong_calibration.py  (exit 0) ===
+[[ 0.40283542  0.49870811 -0.06942801 -0.43934471]]
+LogReg      acc=0.653 F1=0.421 AUC=0.703
+KNN         acc=0.925 F1=0.827 AUC=0.973
+SVM (RBF)   acc=0.910 F1=0.814 AUC=0.977
+DecTree     acc=0.887 F1=0.776 AUC=0.942
+RandForest  acc=0.915 F1=0.818 AUC=0.975
+AUC(SVM) - AUC(RF) = 0.0028 +/- 0.0010, p = 0.006
+balanced RF Brier 0.0609 ECE 0.0594
++ isotonic Brier 0.05 ECE 0.007
+KNN         AUC 0.9735  SE 0.0018
+SVM (RBF)   AUC 0.9774  SE 0.0016
+RandForest  AUC 0.9745  SE 0.0018
+unpaired SE of the difference SVM - RF: 0.0024
+AUC(RF) - AUC(KNN) = 0.0011 +/- 0.0011, p = 0.32
+paired bootstrap 95 % CI of AUC(SVM) - AUC(RF): [0.0009 0.0048]
+McNemar RF vs KNN: n01 = 116, n10 = 173, p = 0.001; accuracy RF 0.915, KNN 0.925
+balanced RF, scores 0.4-0.5: mean score 0.45, signal fraction 0.19
+balanced RF, scores 0.5-0.6: mean score 0.55, signal fraction 0.25
+AUC after isotonic calibration 0.9739
+events with calibrated p > 0.5: 21.5 %; after shifting to a 1 % signal fraction: 2.5 %
+=== 10_ensemble_spread.py  (exit 0) ===
+truth       [ 0.84  0.14 -0.96  0.66  0.99]
+poly mean   [ 0.85  0.14 -0.94 -0.59 -5.96]  spread [0.021 0.018 0.023 0.534 2.052]
+forest mean [ 0.77  0.09 -0.92 -0.54 -0.54]  spread [0.102 0.194 0.075 0.052 0.052]
+forest error at x = 3.5, 4.0: [1.2  1.53]; forest spread inside [0, 3]: 0.075-0.194
+saved outputs/ch09_ensemble_extrapolation.png
+=== 11_bayes_cov_polymer.py  (exit 0) ===
+n_eff = 266
+lambda_1 95% interval: [81.5 89.7 99. ]
+overlap with p=1 mode: [0.985 0.991 0.994]
+tau of PC1 = 18.8 frames (theory 84.5 / 5 = 16.9)
+=== exercises/E9_2_short_data_ic.py  (exit 0) ===
+gamma = 0.2858 +/- 0.0076 1/s
+omega = 6.0095 +/- 0.0074 rad/s
+60 points in the first 3 s, sigma 0.05 m
+model  k   chi2_min  chi2_red     AIC      BIC   CV blocked  CV shuffled
+M1     3     406.0     7.12    412.0    418.3     0.1524      0.1385
+M2     4      54.4     0.97     62.4     70.8     0.0532      0.0511
+M3     5      50.5     0.92     60.5     71.0     0.0528      0.0501
+M4     8      45.6     0.88     61.6     78.4     0.1562      0.0498
+M4 local minima found: 17 distinct chi2 values from 45.6 to 54.4 (+ worse ones)
+best M4 second term: B = 0.002 m, gamma2 = -1.293 1/s, omega2 = 1.46 rad/s
+M3 offset c = 0.013 +/- 0.007 m
+=== exercises/E9_3_magnetization_tau.py  (exit 0) ===
+<e> = -1.4139, tau_int(e) = 17.5
+<|m|> = 0.683, tau_int(|m|) = 34.0 (window 170)
+SE naive 0.0014, with tau 0.0112 (8.2 x)
+block bootstrap, blocks of  100: 0.0092
+block bootstrap, blocks of  200: 0.0102
+block bootstrap, blocks of  500: 0.0106
+block bootstrap, blocks of 1000: 0.0106
+blocking: [0.0014 0.0019 0.0027 0.0037 0.005  0.0066 0.0082 0.0094 0.0105 0.0106
+ 0.0126]
+=== exercises/E9_4_bad_data_mcmc.py  (exit 0) ===
+curve_fit: gamma = 0.210 +/- 0.081, Q = 13.9
+acceptance: 0.36026
+A     median 0.9807  95% [0.5378, 1.5868]  tau_int 10.4
+gamma median 0.2759  95% [0.0995, 0.7018]  tau_int 33.4
+omega median 5.8362  95% [5.6345, 6.0624]  tau_int 12.8
+phi   median 0.9064  95% [0.4110, 1.3767]  tau_int 6.5
+Q: median 10.6, 95 % [4.2, 29.4], report 10.6 +6.1 -3.8
+independent samples of gamma: 1349
+=== exercises/E9_5_repeated_cv.py  (exit 0) ===
+[[ 0.40283542  0.49870811 -0.06942801 -0.43934471]]
+LogReg      acc=0.653 F1=0.421 AUC=0.703
+KNN         acc=0.925 F1=0.827 AUC=0.973
+SVM (RBF)   acc=0.910 F1=0.814 AUC=0.977
+DecTree     acc=0.887 F1=0.776 AUC=0.942
+RandForest  acc=0.915 F1=0.818 AUC=0.975
+SVM (RBF)   mean AUC 0.9791
+RandForest  mean AUC 0.9758
+KNN         mean AUC 0.9760
+correction factor sqrt(1 + J n_test/n_train) = 2.69
+SVM (RBF) - RandForest: +0.0033 (sd 0.0014); naive t = 11.6, p = 2e-11; corrected t = 4.3, p = 0.0002
+SVM (RBF) - KNN: +0.0031 (sd 0.0012); naive t = 12.9, p = 3e-12; corrected t = 4.8, p = 7e-05
+RandForest - KNN: -0.0003 (sd 0.0018); naive t = -0.7, p = 0.5; corrected t = -0.3, p = 0.8
+
+=== 12_claims_checks.py  (exit 0) ===
+1  all ten Chapter 9 listings ran in book order as one notebook (158 s)
+2  5-fold CV: each training set holds 4/5 of the data; two of them share 3/5, i.e. 75 % of each
+3  ln 7 = 1.95, ln 8 = 2.08
+4  poor data: gamma = 0.21 +/- 0.08 (39 %); bootstrap Q: median 14.8, SD 11800461880814600, max 331943259816760640; SD without the top 1 % 18.9
+5  block SE of <e>: 50 -> 0.0053, 200 -> 0.0067, 500 -> 0.0071; blocks of 50 are 25 % below the plateau 0.0071
+6  fraction called signal: KNN 0.234, balanced RF 0.266 (true 0.200); signal efficiency KNN 0.897, RF 0.953
+7  AUC of RF scores 0.9745, of scores cubed 0.9745; mean score 0.259 vs cubed 0.179
+8  E9.4 with prior uniform in gamma    : gamma median 0.28, Q median 10.6, 95 % [4.2, 29.4]
+8  E9.4 with prior uniform in ln gamma : gamma median 0.22, Q median 13.5, 95 % [5.4, 1121.8]
+9  WRONG model M1 (no damping): sigma estimated 0.18 m (true 0.05); PPC p-value of chi2 0.50, of lag-1 residual correlation 0.000 (observed lag-1 r = 0.87)

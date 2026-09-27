@@ -1,0 +1,8 @@
+# Minimal list of what sim.py imports.
+# For E2.9, replace this file with the output of
+#     pip freeze > requirements.txt
+# on your own machine: pip freeze pins exact versions (numpy==2.x.y, ...),
+# which is what makes a rebuilt environment identical.
+numpy
+scipy
+matplotlib

@@ -1,0 +1,215 @@
+# expected_output.txt  —  Ch.5, produced by: python run_chapter.py ch05_regression --clean --with-exercises
+# Python 3.11.15 | numpy 2.4.4 | scipy 1.17.1 | pandas 3.0.2 | matplotlib 3.10.9 | scikit-learn 1.8.0 | statsmodels 0.15.0
+# All data are SYNTHETIC (seed 2026, generated inside each listing).
+
+=== 01_hooke_ols.py  (exit 0) ===
+k_fit = 5.1736 N/m, intercept = -0.0109 N
+R^2 = 0.9914
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                      y   R-squared:                       0.991
+Model:                            OLS   Adj. R-squared:                  0.991
+Method:                 Least Squares   F-statistic:                     5539.
+Date:                Sat, 26 Sep 2026   Prob (F-statistic):           3.01e-51
+Time:                        12:38:20   Log-Likelihood:                 107.18
+No. Observations:                  50   AIC:                            -210.4
+Df Residuals:                      48   BIC:                            -206.5
+Df Model:                           1                                         
+Covariance Type:            nonrobust                                         
+==============================================================================
+                 coef    std err          t      P>|t|      [0.025      0.975]
+------------------------------------------------------------------------------
+const         -0.0109      0.008     -1.345      0.185      -0.027       0.005
+x1             5.1736      0.070     74.422      0.000       5.034       5.313
+==============================================================================
+Omnibus:                        0.381   Durbin-Watson:                   2.128
+Prob(Omnibus):                  0.827   Jarque-Bera (JB):                0.525
+Skew:                           0.173   Prob(JB):                        0.769
+Kurtosis:                       2.636   Cond. No.                         17.1
+==============================================================================
+
+Notes:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[0.00806806 0.0695177 ]
+[[-0.02707236  0.0053715 ]
+ [ 5.03385318  5.31340258]]
+
+k = 5.174 +/- 0.070 N/m, 95 % CI [5.03, 5.31] N/m
+k_true = 5.0 lies 2.5 SE from the estimate (outside the 95 % CI: True); relative error 3.5 %
+correlation(intercept, slope) = -0.86
+sum of residuals = -9.6e-15 (zero when the model has an intercept)
+2,000 repeated experiments: the 95 % CI misses k_true in 0.052 of them
+
+pipeline (scale -> degree 2 -> OLS): MSE = 7.61e-04 N^2
+
+=== 02_bias_variance.py  (exit 0) ===
+ d   MSE_train    MSE_val   (noise variance sigma^2 = 0.0025 N^2)
+ 1     0.05839    0.04095
+ 2     0.05786    0.04297
+ 3     0.00205    0.00313
+ 4     0.00202    0.00334
+ 5     0.00201    0.00348
+ 6     0.00197    0.00368
+ 7     0.00197    0.00369
+ 8     0.00191    0.00393
+ 9     0.00181    0.00415
+10     0.00145    0.00469
+11     0.00117    0.00575
+12     0.00102    0.00584
+13     0.00095    0.00673
+14     0.00093    0.00740
+15     0.00093    0.00723
+lowest validation MSE at degree 3
+degrees 1-2: MSE between 0.041 and 0.058 N^2 = 16-23 x sigma^2
+degree 3 on all data: theta1 = 5.23 +/- 0.18 N/m, theta2 = 1.5 +/- 1.1 N/m^2, theta3 = 470 +/- 14 N/m^3
+saved outputs/ch05_bias_variance.png
+
+=== 03_ridge_cv.py  (exit 0) ===
+  lambda     CV MSE
+   0.0001  0.01216
+   0.0002  0.01906
+   0.0004  0.02213
+   0.0009  0.02104
+   0.0018  0.01710
+   0.0038  0.01240
+   0.0078  0.00865
+   0.0162  0.00626
+   0.0336  0.00485
+   0.0695  0.00395
+   0.1438  0.00334
+   0.2976  0.00304
+   0.6158  0.00326
+   1.2743  0.00430
+   2.6367  0.00658
+   5.4556  0.01102
+  11.2884  0.01930
+  23.3572  0.03346
+  48.3293  0.05728
+ 100.0000  0.10354
+optimal lambda = 0.298, CV MSE = 0.0030 N^2 (sigma^2 = 0.0025)
+lambdas within 10 % of the minimum: 0.144 to 0.616  (a flat valley)
+
+per-fold CV MSE at small lambda (and lambda = 0, plain OLS of degree 10):
+  lambda = 0       folds [1.3638 0.0028 0.0031 0.0033 0.0709]  mean 0.2888
+  lambda = 0.0001  folds [0.0487 0.0029 0.0033 0.0036 0.0022]  mean 0.0122
+  lambda = 0.00043 folds [0.0979 0.003  0.0034 0.0038 0.0026]  mean 0.0221
+  lambda = 0.3     folds [0.0025 0.0035 0.0039 0.0038 0.0016]  mean 0.0030
+fold 1: validation x reaches 0.140 m, training x only up to 0.122 m -> the degree-10 polynomial must extrapolate there; this fold makes the bump near lambda ~ 4e-4
+saved outputs/ch05_ridge_cv.png
+
+=== 04_damped_oscillator.py  (exit 0) ===
+gamma = 0.2858 +/- 0.0076 1/s
+omega = 6.0095 +/- 0.0074 rad/s
+
+A = 0.9607 +/- 0.0176 m, phi = 0.4819 +/- 0.0174 rad
+omega is +1.3 sigma from 6.0, gamma is -1.9 sigma from 0.3
+chi2 = 233.2, nu = 196, chi2_red = 1.19, sqrt(2/nu) = 0.10, p = 0.035
+Q = omega0/(2 gamma) = 10.53 (true 10.01); 1/gamma = 3.50 s; oscillations in 1/gamma: 3.3; gamma/omega = 0.048; (omega0 - omega)/omega = 0.11 %
+starting omega 1..18 rad/s: converged to omega = 6.010 from 18 of 18 starts (all)
+saved outputs/ch05_damped_fit.png
+
+=== 05_shockley_diode.py  (exit 0) ===
+I0 = (1.94 +/- 0.08) pA, n = 1.397 +/- 0.004
+correlation(I0, n) = 0.977
+V_T = k_B T / q at 300 K = 25.85 mV
+current range: 7.65e-09 A to 1.31e-04 A
+unweighted fit for comparison: I0 = 54.56 pA, n = 1.720
+saved outputs/ch05_shockley.png
+
+=== 06_q_propagation.py  (exit 0) ===
+gamma = 0.2858 +/- 0.0076 1/s
+omega = 6.0095 +/- 0.0074 rad/s
+
+Q = 10.51; sigma_Q naive = 0.280, full = 0.281, matrix = 0.281
+Q (true, omega/(2 gamma) with 6.0 and 0.3) = 10.00; distance 1.8 sigma
+correlation matrix (A, gamma, omega, phi):
+[[ 1.    0.73 -0.06  0.09]
+ [ 0.73  1.   -0.05  0.06]
+ [-0.06 -0.05  1.   -0.71]
+ [ 0.09  0.06 -0.71  1.  ]]
+rho(gamma, omega) = -0.05, rho(A, gamma) = +0.73, rho(omega, phi) = -0.71
+a(5 s) = 0.230 m; sigma naive = 0.0097 m, full = 0.0064 m (naive / full = 1.52)
+Monte Carlo from N(popt, pcov): sigma_Q = 0.281, sigma_a(5 s) = 0.0064 m
+
+=== 07_claims_checks.py  (exit 0) ===
+1. multicollinearity, x = 0-0.20 m (all positive)
+   corr(x, x^2) = 0.967, VIF = 15
+   corr(x, x^3) = 0.915, VIF = 6
+   x, x^2, x^3 together: VIF = [ 92 536 212]
+   standardized first: corr(z, z^2) = -0.000, corr(z, z^3) = 0.917, VIF(z, z^2, z^3) = [6.3 1.  6.3]
+
+2. exponential decay, tau = 2.0 s, constant noise 2 counts, 1,000 data sets
+   points with y <= 0 that ln y must drop: 3.8 per data set on average
+   unweighted line on ln y: tau = 2.10 +/- 0.16 s (mean +/- spread)
+   curve_fit on y directly: tau = 2.000 +/- 0.034 s
+
+3. slope SE (sigma = 0.03 N, 50 points): 0-5 cm 0.288 N/m, 0-20 cm 0.072 N/m, ratio 4.0
+
+4. prediction y = c + m x0 (Hooke data), corr(c, m) = -0.86
+   x0 = 0.00 m: naive 0.0081 N, full 0.0081 N, naive/full = 1.00
+   x0 = 0.05 m: naive 0.0088 N, full 0.0054 N, naive/full = 1.64
+   x0 = 0.10 m: naive 0.0106 N, full 0.0041 N, naive/full = 2.60
+   x0 = 0.15 m: naive 0.0132 N, full 0.0054 N, naive/full = 2.45
+   x0 = 0.20 m: naive 0.0161 N, full 0.0081 N, naive/full = 1.99
+   (mean of x = 0.10 m)
+
+5. chi2_red = 0.1 with 100 points (nu = 98): P(chi2_red <= 0.1) = 9e-32; residuals smaller than the quoted sigma by sqrt(10) = 3.2
+
+=== exercises/E5_2_raw_vs_standardized.py  (exit 0) ===
+raw slope          k_raw = 5.1736 N/m
+standardized slope k_std = 0.3047 N   (units of F: z has no unit)
+k_raw * s_x (ddof=0)     = 0.3047 N   -> identical
+k_raw * s_x (ddof=1)     = 0.3078 N   -> differs slightly: StandardScaler divides by N
+ridge (alpha = 1) with x in m : slope converted back to N/m = 0.765
+ridge (alpha = 1) with x in mm: slope converted back to N/m = 5.174
+-> the penalty depends on the unit of x unless the features are standardized first
+
+=== exercises/E5_3_degrees_1_3_6_10.py  (exit 0) ===
+degree  1: largest |curve - true law| on the grid 0.795 N, residual sign runs 4 of 42 points
+degree  3: largest |curve - true law| on the grid 0.092 N, residual sign runs 20 of 42 points
+degree  6: largest |curve - true law| on the grid 0.129 N, residual sign runs 21 of 42 points
+degree 10: largest |curve - true law| on the grid 1.060 N, residual sign runs 18 of 42 points
+
+spread (std) of the fitted curve over 200 new data sets, at the centre and near the edge:
+degree  1: x = 0: 0.041 N   x = 0.145 m: 0.097 N
+degree  3: x = 0: 0.012 N   x = 0.145 m: 0.029 N
+degree  6: x = 0: 0.018 N   x = 0.145 m: 0.084 N
+degree 10: x = 0: 0.024 N   x = 0.145 m: 0.563 N
+saved outputs/E5_3_degrees.png
+
+=== exercises/E5_4_lambda_vs_noise.py  (exit 0) ===
+noise 0.05 N: lambda* = 0.298, min CV MSE = 0.0030 N^2 (sigma^2 = 0.0025); within 10 % of the minimum: 0.144-0.616
+noise 0.15 N: lambda* = 0.616, min CV MSE = 0.0257 N^2 (sigma^2 = 0.0225); within 10 % of the minimum: 0.144-1.274
+saved outputs/E5_4_lambda_vs_noise.png
+
+=== exercises/E5_5_damped_from_graph.py  (exit 0) ===
+9 maxima; omega from their spacing = 5.99 rad/s; A from the first maximum = 0.71 m; gamma from maxima 1 and 5 = 0.24 1/s
+gamma = (0.286 +/- 0.008) 1/s, omega = (6.010 +/- 0.007) rad/s
+relative uncertainty: gamma 2.7 %, omega 0.12 %
+Q = 10.5 +/- 0.3; true Q = omega0/(2 gamma) = 10.01; difference 1.8 sigma
+residuals: mean +0.0033 m, std 0.0544 m (noise 0.05 m); lag-1 autocorrelation +0.01
+
+=== exercises/E5_6_diode_series_resistance.py  (exit 0) ===
+check: solution satisfies the implicit equation to 4.5e-15 (relative)
+
+ideal Shockley: I0 = 2.76 pA, n = 1.440
+chi2_red = 5.2 at nu = 44; sqrt(2/nu) = 0.21; (chi2_red - 1)/sqrt(2/nu) = 20
+mean normalised residual in the low / middle / high third of the voltage range: -0.7 / +1.5 / +0.0
+most negative normalised residual -7.3 sigma at V = 0.75 V (last point: -7.3 sigma)
+
+with R_s: I0 = 1.96 +/- 0.04 pA, n = 1.398 +/- 0.001, R_s = 19.1 +/- 1.8 ohm; chi2_red = 0.69
+ideal fit on V <= 0.55 V only: n = 1.395, chi2_red = 0.60 -> R_s is invisible at low current
+saved outputs/E5_6_diode_residuals.png
+
+=== exercises/E5_7_correlated_quantities.py  (exit 0) ===
+gamma = 0.2858 +/- 0.0076 1/s
+omega = 6.0095 +/- 0.0074 rad/s
+
+Q = omega/(2 gamma)          =  10.5149: naive 0.2801, full 0.2807, naive/full = 1.00
+a(5 s) = A exp(-5 gamma) [m] =   0.2302: naive 0.0097, full 0.0064, naive/full = 1.52
+crest time t_1 [s]           =   0.9654: naive 0.0031, full 0.0022, naive/full = 1.41
+crest time t_9 [s]           =   9.3297: naive 0.0119, full 0.0097, naive/full = 1.23
+-> Q: gamma and omega are almost uncorrelated, both formulas agree.
+   a(5 s) and crest times: the derivatives have the same sign and rho < 0 (omega-phi) or
+   opposite signs and rho > 0 (A-gamma), so the covariance term is negative and the naive
+   formula overestimates the uncertainty (table tab:correlation-sig)

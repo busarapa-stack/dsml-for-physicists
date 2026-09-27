@@ -1,0 +1,269 @@
+# expected_output.txt  —  Ch.4, produced by: python run_chapter.py ch04_statistics --clean --with-exercises
+# Python 3.11.15 | numpy 2.4.4 | scipy 1.17.1 | pandas 3.0.2 | matplotlib 3.10.9 | seaborn 0.13.2 | statsmodels 0.15.0
+# All data are SYNTHETIC (01_make_data.py, SEED = 2026). Run times depend on the computer.
+
+=== 01_make_data.py  (exit 0) ===
+co60_counts.csv        : 1000 counts, mean 5.189
+halpha_spectrum.csv    : sigma used 0.0199 nm (T = 1e4 K)
+galaxy10_features.csv  : 1995 galaxies, columns ['image_id', 'galaxy_class', 'redshift', 'r_mag', 'g_mag', 'concentration']
+
+=== 02_eda.py  (exit 0) ===
+<class 'pandas.DataFrame'>
+RangeIndex: 1995 entries, 0 to 1994
+Data columns (total 6 columns):
+ #   Column         Non-Null Count  Dtype  
+---  ------         --------------  -----  
+ 0   image_id       1995 non-null   str    
+ 1   galaxy_class   1995 non-null   str    
+ 2   redshift       1690 non-null   float64
+ 3   r_mag          1995 non-null   float64
+ 4   g_mag          1992 non-null   float64
+ 5   concentration  1995 non-null   float64
+dtypes: float64(4), str(2)
+memory usage: 93.6 KB
+          redshift        r_mag        g_mag  concentration
+count  1690.000000  1995.000000  1992.000000    1995.000000
+mean      0.091246    17.102339    17.836239       3.250568
+std       0.047518     1.369067     1.382214       0.596763
+min       0.005000    13.581000    14.033000       1.874000
+25%       0.055400    16.131000    16.838500       2.781500
+50%       0.084750    16.910000    17.698000       3.151000
+75%       0.119375    17.904500    18.647250       3.722000
+max       0.287100    23.220000    24.043000       5.009000
+
+correlation matrix:
+                redshift  r_mag  g_mag  concentration
+redshift          1.000  0.832  0.824          0.006
+r_mag             0.832  1.000  0.994          0.020
+g_mag             0.824  0.994  1.000          0.087
+concentration     0.006  0.020  0.087          1.000
+saved outputs/ch04_eda_1_hist.png ... ch04_eda_4_corr.png
+
+=== 03_poisson_fit.py  (exit 0) ===
+variance/mean = 0.991
+chi^2 = 5.18, dof = 10, p = 0.879
+
+mean = 5.189 counts/s from 1000 intervals; kept 12 of 15 bins (expected >= 5)
+for true Poisson data (N = 1000) variance/mean falls in [0.915, 1.089] 95 % of the time
+saved outputs/ch04_poisson_fit.png
+
+=== 04_gaussian_fit.py  (exit 0) ===
+expected at T = 1e4 K: sigma = 0.0199 nm, FWHM = 0.0468 nm (2 sqrt(2 ln 2) = 2.3548)
+line centre  mu    = 656.2800 nm
+line width   sigma = 0.0199 +/- 0.0002 nm
+FWHM = 0.0469 nm
+temperature from the width: T = 10037 +/- 166 K (generated with 10000 K)
+
+=== 05_hypothesis_tests.py  (exit 0) ===
+H0 (Poisson): do not reject (p = 0.879)
+t = 2.635, p = 0.009
+
+These counts were GENERATED from a Poisson law with mean exactly 5.0, yet the t-test gives p = 0.009.
+With alpha = 0.05, true-H0 data are rejected 5 % of the time (type I error); this sample is one of those. One test on one data set is not a discovery.
+check with 4,000 simulated experiments: fraction with p < 0.05 = 0.048
+
+5 sigma, one-sided: alpha = 2.87e-07  (text: ~3e-7)
+20 independent tests at 0.05: P(at least one false positive) = 0.64  (text: ~64 %)
+50 mass windows at local p < 0.01: P(at least one) = 0.39; Bonferroni threshold 0.05/50 = 0.001
+
+=== 06_confidence_intervals.py  (exit 0) ===
+Poisson mean: 5.189 +/- 0.072, 95 % CI [5.048, 5.330]
+fraction = 0.075, 95% CI = [0.026, 0.199]
+Gaussian (Wald) interval f +/- 1.96 sqrt(f(1-f)/n): [-0.007, 0.157]  <- lower edge below 0, impossible for a fraction
+coverage over 20,000 repeated experiments (true fraction 0.075, n = 40): Wilson 0.973, Wald 0.802
+
+  N   t_0.025,N-1   wider than z = 1.96 by
+   5      2.776       41.7 %
+  10      2.262       15.4 %
+  30      2.045        4.3 %
+ 100      1.984        1.2 %
+N = 5: '95 %' interval with 1.96 covers 0.879, with t covers 0.951
+
+pendulum: SEM = 0.0094 s; 95 % CI = 2.013 +/- 0.026 s (with 1.96: +/- 0.018 s, 29 % too narrow)
+halving a CI needs 4x the data (SE ~ 1/sqrt(N))
+
+=== 07_metropolis_ising.py  (exit 0) ===
+  T  E_per_spin  Cv_per_spin  E_onsager
+1.5      -1.953        0.188     -1.951
+1.6      -1.925        0.267     -1.928
+1.7      -1.896        0.348     -1.898
+1.8      -1.859        0.456     -1.859
+1.9      -1.815        0.511     -1.809
+2.0      -1.744        0.685     -1.746
+2.1      -1.675        0.895     -1.662
+2.2      -1.544        1.318     -1.546
+2.3      -1.365        1.866     -1.343
+2.4      -1.281        1.446     -1.204
+2.5      -1.148        1.054     -1.106
+2.6      -1.038        0.860     -1.028
+2.7      -0.964        0.639     -0.964
+2.8      -0.902        0.502     -0.908
+2.9      -0.864        0.466     -0.860
+3.0      -0.820        0.412     -0.817
+3.1      -0.784        0.376     -0.779
+3.2      -0.743        0.300     -0.745
+3.3      -0.712        0.291     -0.714
+3.4      -0.684        0.266     -0.686
+3.5      -0.655        0.230     -0.660
+
+run time: 105 s for 21 temperatures
+T_c (Onsager) = 2.2692; exact E/N just above T_c = -1.4142, -sqrt(2) = -1.4142
+C_v peak of this L = 16 run at T = 2.30 (grid step 0.1), C_v/N = 1.87
+E/N at T = 1.5: -1.953 (Onsager, infinite lattice: -1.951)
+E/N at T = 2.0: -1.744 (Onsager, infinite lattice: -1.746)
+E/N at T = 3.5: -0.655 (Onsager, infinite lattice: -0.660)
+saved outputs/ch04_ising_metropolis.png and outputs/ch04_ising_metropolis_L16.csv
+
+=== 08_wang_landau_ising.py  (exit 0) ===
+70624.27630752302 65536
+exact g(E): {-32: 2, -24: 32, -20: 64, -16: 424, -12: 1728, -8: 6688, -4: 13568, 0: 20524, 4: 13568, 8: 6688, 12: 1728, 16: 424, 20: 64, 24: 32, 32: 2}
+no states at E = -28 or +28: True
+this run (seed 2026): sum g = 70624 (+7.8 %), 33000 sweeps
+
+seed  ln_f=1e-6: sum error  g(-24)   g(-20) | ln_f=1e-8: sum error
+   1         -3.3 %    32.0    62.3  |          -3.3 %
+   2         -9.1 %    30.8    59.2  |          -9.0 %
+   3        -16.0 %    29.4    59.2  |         -15.9 %
+   4        +12.1 %    33.3    64.1  |         +11.8 %
+   5         -6.0 %    30.6    58.2  |          -5.9 %
+   6         -0.5 %    31.4    62.9  |          -0.5 %
+   7         +4.4 %    32.9    64.2  |          +4.3 %
+   8         -2.7 %    31.1    62.3  |          -2.6 %
+-> lowering ln f from 1e-6 to 1e-8 changes almost nothing: error saturation
+
+seed 3, error of g(E) vs exact, from the anchor E_min outward:
+  -32:+0%  -24:-8%  -20:-8%  -16:-11%  -12:-16%  -8:-18%  -4:-17%  0:-16%  4:-15%  8:-15%  12:-16%  16:-17%  20:-18%  24:-21%  32:-17%
+-> small next to the anchor g(-32) = 2, larger far from it; g(E) and g(-E) can differ by tens of percent without any bug
+
+C_v/N peak at T = 2.40 (L = 4); S/N at T = 5: 0.649, ln 2 = 0.693; S/N at T = 50: 0.697
+(at infinite T, S/N = ln(sum g)/N; it misses ln 2 by exactly the error of the sum)
+
+=== 09_reporting.py  (exit 0) ===
+tab:reporting-examples, recomputed from the 'wrong' versions:
+  656.28135 ± 0.00521  ->  (656.281 ± 0.005) nm
+  9.81254 ± 0.02  ->  (9.81 ± 0.02) m/s^2
+  342156.7 ± 15234.2  ->  (3.42 ± 0.15) × 10^5 m/s
+rounding 0.14 to 0.1 changes it by 29 % (text: almost 30 %)
+
+T1/2(Co-60) = 5.271 ± 0.004 (stat) ± 0.005 (syst) years
+reference: 1925.28 ± 0.14 d = 5.2711 ± 0.0004 y (1 y = 365.25 d)
+  with 1 y = 365.2422 d: 5.2712 y, shift +0.0001 y (smaller than the reference uncertainty 0.0004 y)
+  with 1 y = 365.0 d: 5.2747 y, shift +0.0036 y (larger than the reference uncertainty 0.0004 y)
+95 % CI (statistical only): 5.2713 ± 0.0082 -> [5.263, 5.280] y
+difference measured - reference = +0.0002 y = +0.04 sigma_stat
+combined uncertainty sqrt(stat^2 + syst^2) = 0.0065 y; halving stat (4x more counting) gives 0.0054 y: only 17 % better
+
+pendulum: T known to 1 %, l to 0.1 % -> g = (9.80 ± 0.20) m/s^2; relative error of g = 2.00 % (the period contributes 2 x 1 %)
+Monte Carlo check: std(g)/g = 2.00 %
+
+=== exercises/E4_2_counts_eda.py  (exit 0) ===
+count    1000.000
+mean        5.189
+std         2.268
+min         0.000
+25%         4.000
+50%         5.000
+75%         7.000
+max        14.000
+variance/mean = 0.991
+95.4 % of the sorted counts equal the Poisson quantile exactly
+conclusion: the data do not contradict a Poisson law (not: 'are certainly Poisson')
+saved outputs/E4_2_counts.png
+
+=== exercises/E4_3_chi2_interpretation.py  (exit 0) ===
+case                                   mean  var/mean   chi2 p
+Co-60 data (this chapter)              5.19     0.991    0.879
+dead time: rate 12/s, tau 0.05 s       7.45     0.432 6.31e-36
+background drifting 3 -> 7 /s          4.98     1.196 0.000493
+
+Co-60 data: variance/mean 95 % bootstrap CI [0.907, 1.075] -> deviations from Poisson of up to ~8 % either way are not excluded
+
+=== exercises/E4_4_metropolis_thermalization.py  (exit 0) ===
+T = 2.0, L = 16: E/N after 500 sweeps averages -1.753; first within 0.02 of it at sweep 45
+C_v/N peak: L = 8 at T = 2.4 (height 1.19); L = 16 at T = 2.3 (height 1.87)
+-> the smaller lattice gives a lower, broader peak; both lie near T_c = 2.269, limited by the 0.1 temperature grid
+
+=== exercises/E4_5_wang_landau_thermo.py  (exit 0) ===
+   T    <E>/N WL  exact     C_v/N WL  exact     S/N WL  exact
+ 0.50   -2.0000 -2.0000     0.0000  0.0000    0.0433  0.0433
+ 1.00   -1.9969 -1.9972     0.0256  0.0234    0.0468  0.0465
+ 1.50   -1.9466 -1.9506     0.2149  0.2003    0.0851  0.0819
+ 2.00   -1.7419 -1.7554     0.6230  0.6055    0.2000  0.1914
+ 2.27   -1.5485 -1.5650     0.7872  0.7836    0.2905  0.2805
+ 2.50   -1.3633 -1.3791     0.8038  0.8125    0.3682  0.3584
+ 3.00   -1.0081 -1.0171     0.5888  0.6031    0.4983  0.4910
+ 4.00   -0.6247 -0.6255     0.2368  0.2401    0.6110  0.6062
+ 5.00   -0.4568 -0.4561     0.1192  0.1195    0.6490  0.6445
+C_v peak: WL T = 2.42, exact T = 2.44 (L = 4, far from T_c = 2.269: finite size)
+S/N -> ln 2 = 0.6931 as T -> infinity (exact S/N at T = 5: 0.6445)
+largest relative difference WL vs exact for T >= 1: <E> 1.1 %, C_v 9.3 %, S 4.5 %
+8 x 8 lattice and comparison with the exact finite-lattice result: see E4_5b_wang_landau_8x8.py
+
+=== exercises/E4_5b_wang_landau_8x8.py  (exit 0) ===
+Kaufman ln Z vs enumeration (4 x 4): largest difference 1.8e-15
+4 x 4:   49000 sweeps =    784,000 spin-flip attempts,   6.1 s
+8 x 8:  256000 sweeps = 16,384,000 spin-flip attempts, 127.1 s
+-> 4 times more spins, 21 times more attempts (63 instead of 15 energy levels)
+8 x 8: sum of g(E) differs from 2^64 by -9.8 %
+
+   T   <E>/N: WL    Metro   exact   |  C_v/N: WL   Metro   exact
+ 1.50   -1.9516  -1.9496 -1.9511   |   0.1945  0.1911  0.1973
+ 2.00   -1.7518  -1.7728 -1.7457   |   0.6931  0.5707  0.7141
+ 2.30   -1.4653  -1.4948 -1.4559   |   1.1789  1.0973  1.1710
+ 2.40   -1.3452  -1.3141 -1.3372   |   1.2038  1.1915  1.1841
+ 2.50   -1.2281  -1.1985 -1.2223   |   1.1233  1.1171  1.1005
+ 3.00   -0.8414  -0.8396 -0.8413   |   0.4858  0.5069  0.4840
+ 3.50   -0.6652  -0.6612 -0.6649   |   0.2609  0.2539  0.2620
+
+C_v/N peak (L = 8): WL T = 2.371 (height 1.208), exact T = 2.362 (height 1.192); T_c(infinite) = 2.269
+largest relative difference WL vs exact on this grid: <E> 0.6 %, C_v 2.9 %
+
+=== exercises/E4_5c_wang_landau_1t.py  (exit 0) ===
+
+original, ln f = 1e-6
+seed   sweeps   time    sum g vs 2^16
+   1    34000    4.2 s     -3.3 %
+   2    34000    4.1 s     -9.1 %
+   3    36000    4.3 s    -16.0 %
+   4    33000    3.9 s    +12.1 %
+   5    36000    4.5 s     -6.0 %
+   6    38000    4.7 s     -0.5 %
+   7    33000    4.0 s     +4.4 %
+   8    36000    4.3 s     -2.7 %
+largest |error| 16.0 %, mean 35000 sweeps
+
+1/t,      ln f = 1e-5
+seed   sweeps   time    sum g vs 2^16
+   1    93750   13.2 s     +2.0 %
+   2    93750   12.9 s     +1.9 %
+   3    93750   13.0 s     -1.8 %
+   4    93750   12.9 s     +8.5 %
+   5    93750   12.9 s     +2.0 %
+   6    93750   12.7 s     +3.7 %
+   7    93750   13.2 s     +0.6 %
+   8    93750   12.9 s     +1.5 %
+largest |error| 8.5 %, mean 93750 sweeps
+
+summary (seeds 1-8)
+  original, ln f = 1e-6: largest |error| 16.0 %,  1.0 x the sweeps of the original
+  1/t,      ln f = 1e-5: largest |error|  8.5 %,  2.7 x the sweeps of the original
+-> 1/t keeps lowering the error as the run gets longer; the original schedule saturates
+
+=== exercises/E4_7_eda_correlations.py  (exit 0) ===
+r_mag vs g_mag: r = 0.994 (n = 1992); Fisher 95 % CI [0.993, 0.994]; bootstrap [0.993, 0.994]
+redshift vs r_mag: r = 0.832 (n = 1690); Fisher 95 % CI [0.816, 0.846]; bootstrap [0.817, 0.845]
+
+r_mag vs g_mag after removing the common dependence on redshift: r = 0.969
+-> distance (redshift) drives both magnitudes; the remaining correlation comes from each galaxy's own luminosity and colour. Missing redshifts are not random (Ch.3), so the redshift correlation describes only the brighter part of the sample.
+
+=== exercises/E4_5c_wang_landau_1t.py --long  (extra part, run separately; about 20 minutes) ===
+1/t,      ln f = 1e-6  (937,500 sweeps per seed = 27 x the original)
+   1   937500     +0.2 %
+   2   937500     -1.0 %
+   3   937500     -0.6 %
+   4   937500     +1.3 %
+   5   937500     +1.2 %
+   6   937500     +0.5 %
+   7   937500     +0.8 %
+   8   937500     -0.5 %
+largest |error| 1.3 %

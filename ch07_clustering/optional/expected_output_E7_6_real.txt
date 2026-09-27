@@ -1,0 +1,25 @@
+# exercises/E7_6_sdss_unsupervised.py on the REAL Kaggle "Stellar Classification Dataset - SDSS17" (99,999 rows after
+# dropping the sentinel row), placed at ../ch06_classification/data/raw/star_classification.csv. Run 26 Sep 2026 (Linux, sklearn 1.8).
+
+K-Means K=3: ARI 0.092
+col_0  GALAXY    QSO   STAR
+row_0                      
+0       27724    835   4497
+1       17301    646   2196
+2       14420  17480  14900
+
+GMM BIC K=1..10: [218165, 168933, 153228, 136953, 131909, 130121, 126770, 125505, 124760, 124145] -> K* = 10
+GMM K=10: ARI 0.118
+col_0  GALAXY    QSO  STAR   u-g   g-r
+row_0                                 
+0       10967    362   533  0.88  1.56
+1         773  12028  1158  0.32  0.16
+2       13451    122  1671  2.80  1.68
+3        1771   2140  3904  1.44  0.44
+4        4272   2879   725  0.45  0.47
+5        8496     78  1060  2.06  1.41
+6        5669    275  1318  1.40  1.83
+7       12091    419  9739  1.41  0.64
+8         221     76   289  0.93  0.72
+9        1734    582  1196  1.70  1.02
+most quasar-rich GMM cluster: 86 % QSO, holds 63 % of all QSOs, median u-g 0.32

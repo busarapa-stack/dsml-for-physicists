@@ -1,0 +1,61 @@
+# expected_output_real.txt  —  Ch.1 optional/fetch_real_data.py with REAL open data
+# fetch_real_data.py run by the author on 2026-09-26, macOS, Python 3.14, gwosc 0.8.3, mp-api 0.46.5
+# check_real_vs_book.py run offline on the downloaded files, 2026-09-26
+# Values fetched from live services can change when the providers update their databases.
+
+===== ligo =====
+files listed by GWOSC:
+   https://gwosc.org/archive/data/O1/1126170624/H-H1_LOSC_4_V1-1126256640-4096.hdf5
+groups/datasets: meta/{Description, DescriptionURL, Detector, Duration, GPSstart,
+  Observatory, Type, UTCstart}; quality/{detail, injections/{InjDescriptions,
+  InjShortnames, Injmask}, simple/{DQDescriptions, DQShortnames, DQmask}}; strain/Strain
+samples 16,777,216 = 4096 s x 4096 Hz; max |h| = 7.13e-18
+# Only the 4096 s O1 bulk file was listed (not the 32 s event file), so the download is
+# larger than expected. Structure matches code:ligo-hdf5 (meta / strain / quality).
+# max |h| ~ 7e-18 >> 1e-21: raw strain is dominated by low-frequency noise.
+
+===== cms =====
+name                 | typename                 | interpretation
+---------------------+--------------------------+-------------------------------
+nMuon                | uint32_t                 | AsDtype('>u4')
+Muon_pt              | float[]                  | AsJagged(AsDtype('>f4'))
+Muon_eta             | float[]                  | AsJagged(AsDtype('>f4'))
+Muon_phi             | float[]                  | AsJagged(AsDtype('>f4'))
+Muon_mass            | float[]                  | AsJagged(AsDtype('>f4'))
+Muon_charge          | int32_t[]                | AsJagged(AsDtype('>i4'))
+37183 opposite-charge pairs in the first 100,000 events
+
+===== cmsplot =====
+J/psi          2.9-3.3   GeV :   3623 pairs
+Upsilon(1S)    9.2-9.7   GeV :    510 pairs
+Z               81-101   GeV :   6846 pairs
+
+===== mp =====
+material_id                  mp-149
+formula_pretty               Si
+symmetry                     crystal_system=Cubic symbol='Fd-3m' number=227 point_group='m-3m'
+formation_energy_per_atom    0.0
+energy_above_hull            0.0
+is_stable                    True
+band_gap                     0.6103   (eV, GGA-DFT)
+density                      2.3128   (g/cm^3)
+saved data/real/mp-149_real.json
+saved data/real/mp-149_Si.cif   (primitive cell, 2 atoms, a = 3.849 A, angles 60 deg)
+
+# Comparison with experiment (room temperature):
+#   band gap  1.12 eV   -> MP value is about 46 % lower  (book: "ราวร้อยละ 40", the known GGA underestimate)
+#   density   2.329 g/cm^3 -> MP value is about 0.7 % lower (GGA lattice constant slightly too large)
+
+===== check_real_vs_book.py =====
+LIGO   meta/ = Description, DescriptionURL, Detector, Duration, GPSstart, Observatory, Type, UTCstart
+       (no SampleRate: Xspacing attribute of Strain -> 4096 Hz)                              OK
+       32 s window from GPS 1126259446 = 131,072 samples; DQmask = 127 every second          OK
+       quality groups: detail, injections, simple; max |h| in the 32 s = 7.71e-19           OK
+CMS    J/psi  3623 pairs, median 3.084 GeV (PDG 3.097)                                        OK
+       Upsilon(1S) 510 pairs, median 9.455 GeV (PDG 9.460)                                    OK
+       Z      6846 pairs, median 90.711 GeV (PDG 91.19)                                       OK
+MP     formation energy 0; e_above_hull 0 <=> stable                                          OK
+       band gap 0.610 vs 1.12 eV -> 46 % lower                                                OK
+       density from CIF 2.3128 = JSON 2.3128 g/cm^3                                           OK
+       a = 5.444 A vs 5.431 A (+0.23 %), d_nn 2.357 vs 2.352 A, rho 2.313 vs 2.329            OK
+13 OK, 0 DIFFERS

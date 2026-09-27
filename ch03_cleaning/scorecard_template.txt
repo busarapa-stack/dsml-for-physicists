@@ -1,0 +1,22 @@
+DATA QUALITY SCORECARD - <dataset name>
+Reviewer: <name>     Date: <YYYY-MM-DD>     git commit: <hash>
+
+[1] COMPLETENESS                                              /9
+  [ ] missing values: type and cause identified              (0-3)
+  [ ] sample selection bias assessed                         (0-3)
+  [ ] coverage of the parameter space                        (0-3)
+[2] ACCURACY                                                  /9
+  [ ] calibration source and date                            (0-3)
+  [ ] systematic uncertainty estimated                       (0-3)
+  [ ] at least one sanity check against known physics        (0-3)
+[3] CONSISTENCY                                               /6
+  [ ] units stated and consistent for every column           (0-3)
+  [ ] dtypes and naming consistent                           (0-3)
+[4] TIMELINESS                                                /3
+  [ ] dataset version and last-update date                   (0-3)
+[5] REPRODUCIBILITY                                           /9
+  [ ] cleaning script and seed committed to git              (0-3)
+  [ ] requirements.txt and environment documented            (0-3)
+  [ ] notebook passes Restart & Run All                      (0-3)
+
+TOTAL SCORE:                                            ___ / 36
