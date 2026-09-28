@@ -1,0 +1,102 @@
+=== 01_make_pendulum_data.py  (exit 0) ===
+wrote pendulum.csv: 50 rows
+L = 0.20 m  t10 = [8.95, 9.16, 8.76, 8.72, 8.84, 9.05, 8.9, 9.18, 9.01, 9.08]
+L = 0.40 m  t10 = [12.73, 12.77, 12.76, 12.29, 12.73, 12.85, 12.67, 12.78, 12.56, 12.6]
+L = 0.60 m  t10 = [15.75, 15.24, 15.56, 15.4, 15.57, 15.41, 15.76, 15.88, 15.6, 15.85]
+L = 0.80 m  t10 = [17.66, 18.02, 17.76, 17.93, 17.93, 18.28, 17.97, 17.97, 17.9, 18.29]
+L = 1.00 m  t10 = [20.03, 20.15, 20.23, 20.15, 20.36, 19.97, 19.78, 19.88, 20.09, 20.02]
+
+=== 02_variables_units.py  (exit 0) ===
+1.980403218876452e+20
+F = 1.980e+20 N
+<class 'float'> <class 'int'> <class 'str'>
+0.30000000000000004
+False
+True
+13.6 eV = 2.1790e-18 J
+back to eV: 13.6 eV
+7 / 2 = 3.5   7 // 2 = 3   7 % 2 = 1   2**10 = 1024
+E0.1: 2 + 3 * 4 ** 2 / 8 = 8.0
+
+=== 03_collections.py  (exit 0) ===
+10
+17.66
+18.29
+[17.76, 17.93, 17.93]
+11
+1.883531627e-28
+206.7682830178731
+[1, 2] * 2 = [1, 2, 1, 2]
+position_m = (0.0, 1.5, -0.3)
+
+=== 04_control_flow.py  (exit 0) ===
+F =   4.0 N  ->  Hooke (linear)
+F =  10.0 N  ->  Hooke (linear)
+F =  18.0 N  ->  beyond Hooke (nonlinear)
+F =  30.0 N  ->  broken
+mean period T = 1.7971 s
+trial 1: T = 1.766 s
+trial 2: T = 1.802 s
+trial 3: T = 1.776 s
+Euler : t = 2.030 s
+exact : t = 2.022 s
+dt = 0.1    t = 2.1000 s  error = +0.0776 s
+dt = 0.01   t = 2.0300 s  error = +0.0076 s
+dt = 0.001  t = 2.0230 s  error = +0.0006 s
+
+=== 05_functions.py  (exit 0) ===
+g = 9.779 m/s^2
+theta = 30 deg  R = 35.42 m
+theta = 45 deg  R = 40.90 m
+theta = 60 deg  R = 35.42 m
+without radians: R = 36.56 m
+angle with the largest range: 45 deg
+R(30) == R(60)? True
+
+=== 06_numpy_matplotlib.py  (exit 0) ===
+T = 1.7971 +/- 0.0062 s   (s = 0.0197 s, N = 10)
+np.std with ddof=0 gives 0.0187 s
+L [m]      : [0.2 0.4 0.6 0.8 1. ]
+T mean [s] : [0.8965 1.2674 1.5602 1.7971 2.0066]
+slope = 4.0344 s^2/m  intercept = -0.0006 s^2  g = 9.786 m/s^2
+with uncertainties: slope = 4.034 +/- 0.016 s^2/m, intercept = -0.0006 +/- 0.0108 s^2, g = 9.786 +/- 0.039 m/s^2
+g from each length: [9.824 9.831 9.731 9.779 9.805]  mean = 9.794
+list * 2 : [1.0, 2.0, 1.0, 2.0]    array * 2 : [2. 4.]
+
+=== 07_errors.py  (exit 0) ===
+fixed: 9.0 J
+NameError          <- print(velocity)              : NameError: name 'velocity' is not defined
+TypeError          <- 'g = ' + 9.78                : TypeError: can only concatenate str (not "float") to str
+IndexError         <- [1, 2, 3][3]                 : IndexError: list index out of range
+ZeroDivisionError  <- 1 / 0                        : ZeroDivisionError: division by zero
+KeyError           <- {'mass_kg': 1.0}['mass']     : KeyError: 'mass'
+
+=== exercises/E0_2_photon_energy.py  (exit 0) ===
+E = 3.73e-19 J = 2.33 eV
+
+=== exercises/E0_3_charge_to_mass.py  (exit 0) ===
+electron  q/m = -1.7588e+11 C/kg
+proton    q/m = +9.5788e+07 C/kg
+muon      q/m = -8.5062e+08 C/kg
+
+=== exercises/E0_4_loop_mean_max.py  (exit 0) ===
+loop    : mean = 1.7971 s  max = 1.829 s
+builtin : mean = 1.7971 s  max = 1.829 s
+
+=== exercises/E0_5_euler_dt.py  (exit 0) ===
+dt = 0.1    t = 2.1000 s  error = +0.0776 s  error/dt = 0.78
+dt = 0.01   t = 2.0300 s  error = +0.0076 s  error/dt = 0.76
+dt = 0.001  t = 2.0230 s  error = +0.0006 s  error/dt = 0.63
+
+=== exercises/E0_6_range_symmetry.py  (exit 0) ===
+largest range at 45 deg: 40.9 m
+10 80 True
+20 70 True
+30 60 True
+40 50 True
+
+=== exercises/E0_7_pendulum_g.py  (exit 0) ===
+slope fit     : g = 9.786 m/s^2 (intercept -0.0006 s^2)
+each length   : [9.824 9.831 9.731 9.779 9.805]
+mean of five  : g = 9.794 +/- 0.018 m/s^2
+

@@ -18,6 +18,7 @@ REPO_URL = "https://github.com/busarapa-stack/dsml-for-physicists.git"
 NUM = json.loads((ROOT / "tools" / "listing_numbers.json").read_text(encoding="utf-8"))
 
 TITLES = {
+    0: "พื้นฐานการเขียนโปรแกรมภาษาไพทอนสำหรับนักฟิสิกส์",
     1: "บทนำและภูมิทัศน์ข้อมูลฟิสิกส์",
     2: "การโปรแกรมเชิงวิทยาศาสตร์และการทำงานที่ทำซ้ำได้",
     3: "การทำความสะอาดและการเตรียมลักษณะข้อมูลฟิสิกส์",
@@ -201,6 +202,8 @@ def build(chdir):
             f"# ข้อมูลจริง (ไม่บังคับ)\nสคริปต์สำหรับดาวน์โหลดและอ่านข้อมูลจริงอยู่ใน `{chdir.name}/optional/` "
             f"วิธีดาวน์โหลดและผลที่ควรได้อยู่ใน `{chdir.name}/README.md` ข้อมูลเหล่านี้ไม่ได้อยู่ใน GitHub "
             "เพราะขนาดใหญ่หรือมีเงื่อนไขสัญญาอนุญาต"))
+    for i, c in enumerate(cells):          # fixed cell ids: regenerating gives an identical file
+        c.id = f"{chdir.name[:4]}-{i:03d}"
     nb.cells = cells
     out = ROOT / "notebooks" / f"{chdir.name}.ipynb"
     nbf.write(nb, out)
