@@ -10,6 +10,9 @@
 *.root
 *.fits
 
+# ข้อยกเว้น: ตัวอย่างย่อย Galaxy10 (ประมาณ 7 MB) สำหรับ notebook ชั้นเรียนบทที่ 1
+!ch01_intro/sample/galaxy10_decals_sample.h5
+
 # สภาพแวดล้อมและแคช
 .venv/
 venv/
