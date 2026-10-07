@@ -37,7 +37,7 @@ def fit(f, p0, bounds, tt, xx, sig):
 
 
 def fit_m4_multistart(tt, xx, sig):
-    """M4 has many local minima: start from M2's best fit plus a small second term at ~400 starting points."""
+    """M4 has many local minima: start from M2's best fit plus a small second term at ~1,200 starting points (99 values of w2 x 4 of g2 x 3 of p2)."""
     base = fit(M2, [1, .2, 6, 0], MODELS['M2'][2], tt, xx, sig)[0]
     found = []
     for w2 in np.arange(0.2, 20, 0.2):

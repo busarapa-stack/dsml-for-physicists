@@ -66,7 +66,7 @@ def gap_k(Xd, kmax=6, B=20, seed=0):
     """Tibshirani et al. (2001): smallest K with Gap(K) >= Gap(K+1) - s(K+1); uniform box reference."""
     r = np.random.default_rng(seed); lo, hi = Xd.min(0), Xd.max(0); G, S = [], []
     for k in range(1, kmax + 1):
-        w = np.log(KMeans(k, n_init=10, random_state=42).fit(Xd).inertia_)
+        w = np.log(KMeans(k, n_init=3, random_state=42).fit(Xd).inertia_)      # same n_init as the reference sets
         ref = [np.log(KMeans(k, n_init=3, random_state=42).fit(r.uniform(lo, hi, Xd.shape)).inertia_) for _ in range(B)]
         G.append(np.mean(ref) - w); S.append(np.std(ref) * np.sqrt(1 + 1 / B))
     return next((k for k in range(1, kmax) if G[k - 1] >= G[k] - S[k]), kmax)
